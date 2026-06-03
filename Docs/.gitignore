@@ -1,0 +1,12 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor temp files
+*.tmp
+*.bak
+*~
+
+# Optional: ignore generated PDFs if they are exported from other tools
+# and can be regenerated. Uncomment if needed:
+# *.pdf

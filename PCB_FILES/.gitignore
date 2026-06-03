@@ -1,0 +1,38 @@
+# Altium Designer generated files
+*.PrjPcbStructure
+*.PrjPcbVariants
+*.OutJob
+*.Cam
+__Previews/
+History/
+"Project Logs for */"
+"Project Outputs for */"
+
+# Exported manufacturing files (regenerated from source)
+*.Gerber
+*.GTO
+*.GTP
+*.GTS
+*.GTL
+*.GBL
+*.GBO
+*.GBP
+*.GM1
+*.GM2
+*.GM3
+*.GKO
+*.drl
+*.txt
+*.zip
+
+# BOM export cache
+*.BomDoc
+
+# Backup and temp files
+*.bak
+*.tmp
+*.~*
+
+# OS files
+.DS_Store
+Thumbs.db
