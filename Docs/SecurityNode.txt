@@ -1,0 +1,8 @@
+**Project Description — SecurityNode**
+
+SecurityNode is an embedded security system based on an ESP32-C3 microcontroller and an ESP32-CAM vision module. The system is designed to monitor physical access events using external sensors such as a door contact, PIR motion sensor, the ESP32-C3 supervises the sensor inputs and controls the local alarm indicators with an alarm LED, and a buzzer driven through a MOSFET stage. The current schematic includes the main USB power input, 3.3 V regulation, ESP32-C3 control unit, sensor interfaces, visual indicators, buzzer output, and an ESP32-CAM daughter-board connector. 
+
+The main purpose of the project is to improve a conventional alarm system by adding event-triggered visual verification. When a door-opening or motion event is detected, the ESP32-C3 can request the ESP32-CAM module to capture and analyze an image. The vision module may then determine whether the person entering has a visible or covered face, for example due to a helmet, mask, or balaclava. If a suspicious condition is detected, the ESP32-C3 activates the buzzer and alarm LED.
+
+In academic terms, the project integrates power regulation, digital input conditioning, embedded control, actuator driving, sensor-based event detection, and computer vision assistance into a compact PCB-based security platform. The ESP32-C3 acts as the central security controller, while the ESP32-CAM functions as an auxiliary vision-processing module. This modular architecture allows the system to remain operational as a basic alarm even if the vision module is not used, while still providing an intelligent upgrade path for advanced threat detection.
+The ESP32-C3 used is a ESP32-C3-WROOM-02-N4
