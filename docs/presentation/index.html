@@ -94,16 +94,15 @@
             font-size: clamp(2.4rem, 5vw, 4.2rem);
             font-weight: 700; line-height: 1.1;
             margin-bottom: 0.4em;
-            background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--text);
+            text-align: center;
         }
 
         h2 {
             font-size: clamp(1.6rem, 3.2vw, 2.6rem);
             font-weight: 600; margin-bottom: 0.6em;
             color: var(--text);
+            text-align: center;
         }
 
         h3 {
@@ -131,12 +130,16 @@
             text-align: center;
             max-width: 1050px;
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .subtitle {
             font-size: clamp(1.1rem, 1.8vw, 1.5rem);
             color: var(--text-muted);
             margin-bottom: 1.5em;
+            text-align: center;
         }
 
         .author {
@@ -144,12 +147,14 @@
             color: var(--accent);
             margin-top: 0.4em;
             letter-spacing: 1px;
+            text-align: center;
         }
 
         .email {
             font-size: clamp(0.85rem, 1.1vw, 1rem);
             color: var(--text-muted);
             margin-top: 0.2em;
+            text-align: center;
         }
 
         .context-badge {
@@ -243,7 +248,7 @@
 
         .schematic-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 12px; max-width: 1050px;
             margin: 0.8em 0;
         }
@@ -253,19 +258,26 @@
             border-radius: 8px; padding: 10px;
             text-align: center;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .schematic-item img {
             max-width: 100%; max-height: 160px;
             border-radius: 4px;
             border: 1px solid var(--border);
             background: #fff;
+            margin: 0 auto;
+            display: block;
         }
         .schematic-item h4 {
             color: var(--accent); font-size: 0.85rem;
             margin-top: 6px; margin-bottom: 3px;
+            text-align: center;
         }
         .schematic-item p {
             font-size: 0.75rem; color: var(--text-muted); margin: 0;
+            text-align: center;
         }
 
         .poc-diagram {
@@ -417,17 +429,30 @@
                 break-after: auto !important;
             }
 
-            .content-center { max-width: 285mm; }
+            .content-center { 
+                max-width: 285mm;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+            }
 
-            h1 { font-size: 2rem !important; }
-            h2 { font-size: 1.4rem !important; margin-bottom: 0.3em !important; }
+            h1 { 
+                font-size: 2rem !important; 
+                text-align: center !important;
+                color: var(--text) !important;
+                background: none !important;
+                -webkit-background-clip: initial !important;
+                -webkit-text-fill-color: initial !important;
+                background-clip: initial !important;
+            }
+            h2 { font-size: 1.4rem !important; margin-bottom: 0.3em !important; text-align: center !important; }
             h3 { font-size: 0.95rem !important; }
             h4 { font-size: 0.82rem !important; }
             p, li { font-size: 0.78rem !important; line-height: 1.4 !important; }
 
-            .subtitle { font-size: 1rem !important; margin-bottom: 0.8em !important; }
-            .author { font-size: 0.95rem !important; }
-            .email { font-size: 0.8rem !important; }
+            .subtitle { font-size: 1rem !important; margin-bottom: 0.8em !important; text-align: center !important; }
+            .author { font-size: 0.95rem !important; text-align: center !important; }
+            .email { font-size: 0.8rem !important; text-align: center !important; }
             .context-badge { font-size: 11px !important; padding: 4px 10px !important; margin-bottom: 0.6em !important; }
 
             .card-grid { gap: 8px !important; margin-top: 0.6em !important; }
@@ -439,9 +464,12 @@
             .pcb-2d-img { max-height: 80mm !important; }
             .image-caption { font-size: 0.7rem !important; margin-top: 4px !important; }
 
-            .schematic-grid { gap: 6px !important; margin: 0.4em 0 !important; }
+            .schematic-grid { 
+                grid-template-columns: repeat(5, 1fr) !important;
+                gap: 6px !important; margin: 0.4em 0 !important; 
+            }
             .schematic-item { padding: 6px !important; }
-            .schematic-item img { max-height: 65mm !important; }
+            .schematic-item img { max-height: 50mm !important; }
             .schematic-item h4 { font-size: 0.7rem !important; }
             .schematic-item p { font-size: 0.62rem !important; }
 
@@ -583,8 +611,8 @@
                             <span style="font-size: 0.68rem; color: var(--text-muted);">Switch de potencia con límite de corriente</span>
                             <div class="arrow-down">▼</div>
                             <div class="power-box danger-box" style="margin-top: 5px;">
-ESP32-CAM (J3, 5V)<br>
-                            <span style="font-size: 0.68rem; color: var(--text-muted);">Alimentación controlada por TPS2553, 0.075–1.7A</span>
+                                ESP32-CAM (J3, 5V)<br>
+                                <span style="font-size: 0.68rem; color: var(--text-muted);">Alimentación controlada por TPS2553, 0.075–1.7A</span>
                             </div>
                         </div>
                         <div style="width: 24px;"></div>
@@ -648,7 +676,7 @@ ESP32-CAM (J3, 5V)<br>
                         </div>
                     </div>
                 </div>
-                <div style="margin-top: 0.6em; text-align: left; max-width: 800px;">
+                <div style="margin-top: 0.6em; text-align: center; max-width: 800px;">
                     <p style="font-size: 0.78rem; margin-bottom: 0.2em;"><span class="accent-text">Validado:</span> Lógica de sensores, simulación UART, algoritmo de decisión, control de LED.</p>
                     <p style="font-size: 0.78rem;"><span class="accent-text">Limitaciones:</span> Webcam de laptop ≠ OV2640; Python ≠ C++ embebido; sin PCB real; buzzer pendiente.</p>
                 </div>
@@ -683,7 +711,7 @@ ESP32-CAM (J3, 5V)<br>
                     <div class="schematic-item">
                         <img src="images/schematic_blocks/esp32cam.png" alt="Alimentación ESP32-CAM">
                         <h4>Alimentación ESP32-CAM</h4>
-                        <p>Switch de potencia TPS2553 controla la alimentación de la cámara; rama 5V separada de la lógica principal</p>
+                        <p>Switch de potencia TPS2553 controla la alimentación; rama 5V separada de la lógica principal</p>
                     </div>
                 </div>
             </div>
@@ -698,19 +726,19 @@ ESP32-CAM (J3, 5V)<br>
                     <img src="images/pcb_2d.png" alt="Layout PCB 2D" class="pcb-2d-img">
                 </div>
                 <div class="card-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 900px; gap: 10px; margin-top: 0.5em;">
-                    <div class="card" style="padding: 10px; text-align: left;">
+                    <div class="card" style="padding: 10px; text-align: center;">
                         <h4 style="font-size: 0.82rem;">Ubicación de componentes</h4>
                         <p style="font-size: 0.72rem;">Conector USB (J2) en el borde. ESP32-C3 centrado. Header ESP32-CAM (J3) con espacio para cable plano.</p>
                     </div>
-                    <div class="card" style="padding: 10px; text-align: left;">
+                    <div class="card" style="padding: 10px; text-align: center;">
                         <h4 style="font-size: 0.82rem;">Separación potencia/señal</h4>
                         <p style="font-size: 0.72rem;">TPS2553 y AP2112K agrupados arriba-izquierda. Lógica y MCU en centro-derecha.</p>
                     </div>
-                    <div class="card" style="padding: 10px; text-align: left;">
+                    <div class="card" style="padding: 10px; text-align: center;">
                         <h4 style="font-size: 0.82rem;">Planos de tierra y potencia</h4>
                         <p style="font-size: 0.72rem;">Plano de masa en capa inferior. Desacoplo: condensadores bulk cerca de reguladores, 100nF locales en pines VCC.</p>
                     </div>
-                    <div class="card" style="padding: 10px; text-align: left;">
+                    <div class="card" style="padding: 10px; text-align: center;">
                         <h4 style="font-size: 0.82rem;">Fabricación</h4>
                         <p style="font-size: 0.72rem;">Reglas DRC estándar. 4 agujeros de montaje. Conectores accesibles desde bordes. Silk screen completo.</p>
                     </div>
@@ -732,7 +760,7 @@ ESP32-CAM (J3, 5V)<br>
                         <p class="image-caption">Vista inferior</p>
                     </div>
                 </div>
-                <div style="margin-top: 0.5em; text-align: left; max-width: 850px;">
+                <div style="margin-top: 0.5em; text-align: center; max-width: 850px;">
                     <p style="font-size: 0.8rem;">
                         <span class="accent-text">Componentes clave:</span> USB (borde izquierdo) · ESP32-C3 U3 (centro) · Header J3 con OV2640 (centro-derecha) · Buzzer + LED rojo (inferior-izquierda)
                     </p>
