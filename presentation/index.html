@@ -61,7 +61,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Progress Bar */
         .progress-bar {
             position: fixed;
             top: 0;
@@ -82,7 +81,6 @@
             letter-spacing: 1px;
         }
 
-        /* Navigation */
         .nav-hint {
             position: fixed;
             bottom: 20px;
@@ -110,7 +108,6 @@
             border-color: var(--accent);
         }
 
-        /* Typography */
         h1 {
             font-size: clamp(2.5rem, 5vw, 4.5rem);
             font-weight: 700;
@@ -153,7 +150,6 @@
             font-weight: 600;
         }
 
-        /* Layout Components */
         .content-center {
             text-align: center;
             max-width: 1000px;
@@ -174,8 +170,14 @@
         .author {
             font-size: clamp(1rem, 1.5vw, 1.2rem);
             color: var(--accent);
-            margin-top: 1em;
+            margin-top: 0.5em;
             letter-spacing: 1px;
+        }
+
+        .email {
+            font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+            color: var(--text-muted);
+            margin-top: 0.3em;
         }
 
         .context-badge {
@@ -191,7 +193,6 @@
             margin-bottom: 1.5em;
         }
 
-        /* Cards & Grids */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -228,7 +229,6 @@
             font-size: 1rem;
         }
 
-        /* Diagrams */
         .diagram-box {
             background: var(--bg-card);
             border: 2px solid var(--accent);
@@ -246,6 +246,10 @@
 
         .diagram-box.danger {
             border-color: var(--danger);
+        }
+
+        .diagram-box.warning {
+            border-color: var(--warning);
         }
 
         .diagram-arrow {
@@ -271,7 +275,6 @@
             margin: 2em 0;
         }
 
-        /* Power Tree Specific */
         .power-tree {
             display: flex;
             flex-direction: column;
@@ -282,7 +285,7 @@
 
         .power-level {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 20px;
             flex-wrap: wrap;
             justify-content: center;
@@ -301,6 +304,10 @@
             border-color: var(--accent);
         }
 
+        .power-box.danger-box {
+            border-color: var(--danger);
+        }
+
         .power-label {
             color: var(--text-muted);
             font-size: 0.85rem;
@@ -313,43 +320,6 @@
             font-size: 1.2rem;
         }
 
-        /* State Machine */
-        .state-machine {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            max-width: 700px;
-            margin: 1.5em auto;
-        }
-
-        .state-box {
-            background: var(--bg-card);
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-
-        .state-box.active-state {
-            border-color: var(--accent);
-            background: var(--accent-dim);
-        }
-
-        .state-box.alarm-state {
-            border-color: var(--danger);
-            background: var(--danger-dim);
-        }
-
-        .state-arrow {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            font-size: 1.2rem;
-        }
-
-        /* Images */
         .pcb-image {
             max-width: 100%;
             max-height: 55vh;
@@ -365,80 +335,6 @@
             text-align: center;
         }
 
-        /* Tables */
-        .data-table {
-            width: 100%;
-            max-width: 900px;
-            border-collapse: collapse;
-            margin: 1.5em 0;
-            font-size: clamp(0.9rem, 1.2vw, 1.1rem);
-        }
-
-        .data-table th {
-            background: var(--bg-card);
-            color: var(--accent);
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 2px solid var(--accent);
-            font-weight: 600;
-        }
-
-        .data-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--border);
-            color: var(--text-muted);
-        }
-
-        .data-table tr:hover td {
-            background: var(--bg-card);
-            color: var(--text);
-        }
-
-        /* Flow Steps */
-        .flow-steps {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            max-width: 600px;
-            margin: 1.5em auto;
-        }
-
-        .flow-step {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 15px 20px;
-            text-align: left;
-        }
-
-        .step-num {
-            background: var(--accent);
-            color: var(--bg);
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        .step-content h4 {
-            color: var(--text);
-            font-size: 1rem;
-            margin-bottom: 3px;
-        }
-
-        .step-content p {
-            font-size: 0.9rem;
-            margin: 0;
-        }
-
-        /* Lists */
         .feature-list {
             list-style: none;
             max-width: 700px;
@@ -459,7 +355,33 @@
             font-weight: bold;
         }
 
-        /* Thank you slide */
+        .reflection-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            max-width: 900px;
+            text-align: left;
+            margin-top: 1.5em;
+        }
+
+        .reflection-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px 25px;
+        }
+
+        .reflection-item h4 {
+            color: var(--accent);
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .reflection-item p {
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
         .thank-you h1 {
             font-size: clamp(3rem, 6vw, 5rem);
         }
@@ -468,7 +390,136 @@
             font-size: clamp(1.2rem, 2vw, 1.8rem);
         }
 
-        /* Responsive */
+        /* POC Diagram specific styles */
+        .poc-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: 1.5em 0;
+            max-width: 900px;
+        }
+
+        .poc-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .poc-box {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            min-width: 160px;
+        }
+
+        .poc-box.highlight {
+            border-color: var(--accent);
+        }
+
+        .poc-box.cam-box {
+            border-color: var(--secondary);
+        }
+
+        .poc-box.result-green {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+        }
+
+        .poc-box.result-red {
+            border-color: var(--danger);
+            background: var(--danger-dim);
+        }
+
+        .poc-arrow {
+            color: var(--text-muted);
+            font-size: 1.4rem;
+        }
+
+        .poc-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .judge-box {
+            background: var(--bg-card);
+            border: 2px dashed var(--warning);
+            border-radius: 10px;
+            padding: 15px 25px;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .judge-box h4 {
+            color: var(--warning);
+            margin-bottom: 10px;
+        }
+
+        .photo-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .photo-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+        }
+
+        .limitation-list {
+            list-style: none;
+            max-width: 700px;
+            margin: 1em auto;
+            text-align: left;
+        }
+
+        .limitation-list li {
+            padding: 6px 0;
+            padding-left: 25px;
+            position: relative;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .limitation-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--warning);
+        }
+
+        .ref-category {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 20px;
+            margin: 8px 0;
+            text-align: left;
+        }
+
+        .ref-category h4 {
+            color: var(--accent);
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .ref-category p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
         @media (max-width: 768px) {
             .slide {
                 padding: 3vh 4vw;
@@ -476,10 +527,14 @@
             .card-grid {
                 grid-template-columns: 1fr;
             }
-            .state-machine {
-                grid-template-columns: 1fr;
-            }
             .diagram-row {
+                flex-direction: column;
+            }
+            .power-level {
+                flex-direction: column;
+                align-items: center;
+            }
+            .poc-row {
                 flex-direction: column;
             }
         }
@@ -487,7 +542,7 @@
 </head>
 <body>
     <div class="progress-bar" id="progressBar"></div>
-    <div class="slide-counter" id="slideCounter">1 / 11</div>
+    <div class="slide-counter" id="slideCounter">1 / 8</div>
 
     <div class="presentation">
         <!-- SLIDE 1: Title -->
@@ -495,8 +550,9 @@
             <div class="content-center">
                 <div class="context-badge">Final Project of Electronic Design</div>
                 <h1>SecurityNode</h1>
-                <p class="subtitle">Embedded Security with Visual Verification</p>
+                <p class="subtitle">Smart security that visually verifies threats before raising an alarm.</p>
                 <p class="author">Jeronimo Vargas Orozco</p>
+                <p class="email">jevargaso@unal.edu.co</p>
             </div>
         </div>
 
@@ -504,55 +560,51 @@
         <div class="slide">
             <div class="content-center">
                 <h2>What is <span class="accent-text">SecurityNode</span>?</h2>
-                <p>An embedded security platform that detects physical intrusions and verifies threats using computer vision — running entirely on the edge, with no cloud dependency.</p>
-                <div class="card-grid">
-                    <div class="card">
-                        <div class="card-icon">🔒</div>
-                        <h3>Sensor-Driven</h3>
-                        <p>Door contacts and PIR motion sensors continuously monitor access points</p>
+                <p style="margin-bottom: 1.5em;">An embedded security platform that detects physical intrusions and verifies threats using computer vision — running entirely on the edge, with no cloud dependency.</p>
+                
+                <div class="card-grid" style="max-width: 900px;">
+                    <div class="card" style="padding: 25px;">
+                        <h3 style="color: var(--danger);">🚨 The Problem</h3>
+                        <p>Traditional alarms make noise, but they cannot <em>tell</em> you what triggered them. Pets, wind, or authorized users cause the same siren as an actual intruder.</p>
                     </div>
-                    <div class="card">
-                        <div class="card-icon">👁️</div>
-                        <h3>Vision-Augmented</h3>
-                        <p>ESP32-CAM captures and analyzes images to verify if a face is visible or covered</p>
+                    <div class="card" style="padding: 25px;">
+                        <h3 style="color: var(--accent);">👤 Who Uses It</h3>
+                        <p>Homeowners, small businesses, or anyone who wants an affordable, privacy-first security system that works without subscriptions or cloud storage.</p>
                     </div>
-                    <div class="card">
-                        <div class="card-icon">🧩</div>
-                        <h3>Modular</h3>
-                        <p>Works as a basic alarm alone; vision module adds intelligence without breaking core functionality</p>
+                    <div class="card" style="padding: 25px;">
+                        <h3 style="color: var(--secondary);">⚙️ Main Function</h3>
+                        <p>Door contacts and PIR motion sensors detect intrusions. When triggered, the system captures an image and decides: real threat or false alarm?</p>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SLIDE 3: The Problem -->
-        <div class="slide">
-            <div class="content-center">
-                <h2>The <span class="accent-text">Problem</span></h2>
-                <p>Traditional alarms make noise, but they cannot <em>tell</em> you what triggered them.</p>
-                <div class="card-grid" style="max-width: 800px; margin-top: 3em;">
-                    <div class="card" style="border-color: var(--danger);">
-                        <h3 style="color: var(--danger);">❌ False Alarms</h3>
-                        <p>Pets, wind, or authorized users trigger the same siren as an actual intruder</p>
-                    </div>
-                    <div class="card" style="border-color: var(--danger);">
-                        <h3 style="color: var(--danger);">❌ No Context</h3>
-                        <p>You know something happened, but not who, when, or whether it was a real threat</p>
-                    </div>
-                    <div class="card" style="border-color: var(--accent);">
-                        <h3 style="color: var(--accent);">✅ The Goal</h3>
-                        <p>Local, privacy-aware visual verification before raising an alarm</p>
+                    <div class="card" style="padding: 25px;">
+                        <h3 style="color: var(--warning);">📋 Expected Behavior</h3>
+                        <p><strong>Alarm ON:</strong> Red LED + buzzer activate for suspicious conditions (covered face or timeout).<br><br><strong>Alarm OFF:</strong> System logs the event and returns to idle — no alarm sounds.<br><br><strong>No camera:</strong> Still works as a basic alarm (sensor → red LED + buzzer).</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- SLIDE 4: System Architecture -->
+        <!-- SLIDE 3: System Block Diagram -->
         <div class="slide">
             <div class="content-center">
-                <h2>System <span class="accent-text">Architecture</span></h2>
+                <h2>System <span class="accent-text">Block Diagram</span></h2>
                 <div class="diagram-container">
                     <div class="diagram-row">
+                        <div class="diagram-box warning" style="min-width: 160px;">
+                            <div style="font-size: 1.2rem; margin-bottom: 5px;">🔌</div>
+                            Power Supply<br><span style="font-size: 0.75rem; color: var(--text-muted);">USB 5V + Protection</span>
+                        </div>
+                    </div>
+                    <div class="diagram-row" style="margin-top: 5px;">
+                        <div class="diagram-box" style="min-width: 120px; border-color: var(--danger);">
+                            <div style="font-size: 1rem; margin-bottom: 3px;">⚡</div>
+                            5V Rail<br><span style="font-size: 0.7rem; color: var(--text-muted);">TPS2553 → ESP32-CAM</span>
+                        </div>
+                        <div class="diagram-box controller" style="min-width: 120px;">
+                            <div style="font-size: 1rem; margin-bottom: 3px;">🔋</div>
+                            3.3V Rail<br><span style="font-size: 0.7rem; color: var(--text-muted);">AP2112 LDO → Logic</span>
+                        </div>
+                    </div>
+                    <div class="diagram-row" style="margin-top: 20px;">
                         <div class="diagram-box" style="border-color: var(--accent);">
                             <div style="font-size: 1.4rem; margin-bottom: 5px;">🧠</div>
                             ESP32-C3<br><span style="font-size: 0.8rem; color: var(--text-muted);">Controller</span>
@@ -560,7 +612,7 @@
                         <div class="diagram-arrow">⇄ UART</div>
                         <div class="diagram-box secondary">
                             <div style="font-size: 1.4rem; margin-bottom: 5px;">📷</div>
-                            ESP32-CAM<br><span style="font-size: 0.8rem; color: var(--text-muted);">Vision Module</span>
+                            ESP32-CAM<br><span style="font-size: 0.8rem; color: var(--text-muted);">Vision + OV2640</span>
                         </div>
                     </div>
                     <div class="diagram-row" style="margin-top: 20px;">
@@ -572,39 +624,25 @@
                         </div>
                         <div style="width: 30px;"></div>
                         <div class="diagram-box danger" style="min-width: 100px;">
-                            🔊 Buzzer<br>Alarm
+                            🔊 Buzzer
                         </div>
                         <div class="diagram-box danger" style="min-width: 100px;">
-                            💡 LED<br>Indicator
+                            💡 Red LED
                         </div>
                     </div>
                     <div class="diagram-row" style="margin-top: 15px; gap: 30px;">
                         <div class="power-label">Sensors → ESP32-C3 GPIO inputs</div>
-                        <div class="power-label">ESP32-C3 GPIO outputs → Alarm</div>
+                        <div class="power-label">ESP32-C3 GPIO outputs → Actuators</div>
                     </div>
                 </div>
-                <p>When a sensor triggers, the controller requests an image from the CAM. If the face is covered, the alarm sounds.</p>
+                <p>When a sensor triggers, the controller requests an image from the ESP32-CAM module. If the face is covered, the red LED and buzzer activate.</p>
             </div>
         </div>
 
-        <!-- SLIDE 5: Hardware PCB -->
+        <!-- SLIDE 4: Power Tree -->
         <div class="slide">
             <div class="content-center">
-                <h2>Hardware: The <span class="accent-text">PCB</span></h2>
-                <img src="images/pcb_above.png" alt="SecurityNode PCB Top View" class="pcb-image">
-                <p class="image-caption">
-                    <span class="accent-text">Top:</span> ESP32-C3 (U3) &nbsp;|&nbsp; 
-                    <span class="secondary-text">Center:</span> ESP32-CAM Header (J3) &nbsp;|&nbsp; 
-                    <span style="color: var(--danger);">Bottom-left:</span> Buzzer (LS1) + LED &nbsp;|&nbsp; 
-                    <span style="color: var(--warning);">Left:</span> USB + Power Chain
-                </p>
-            </div>
-        </div>
-
-        <!-- SLIDE 6: Power Architecture -->
-        <div class="slide">
-            <div class="content-center">
-                <h2>Power <span class="accent-text">Architecture</span></h2>
+                <h2>Power <span class="accent-text">Tree</span></h2>
                 <div class="power-tree">
                     <div class="power-box" style="border-color: var(--warning);">
                         🔌 USB 5V Input (J2)
@@ -617,11 +655,11 @@
                     </div>
                     <div class="arrow-down">▼</div>
                     <div class="power-level">
-                        <div class="power-box" style="border-color: var(--danger);">
+                        <div class="power-box danger-box">
                             🔀 Branch 1 — TPS2553 (U4)<br>
                             <span style="font-size: 0.75rem; color: var(--text-muted);">Current-Limited Switch</span>
                             <div class="arrow-down">▼</div>
-                            <div class="power-box" style="border-color: var(--danger); margin-top: 8px;">
+                            <div class="power-box danger-box" style="margin-top: 8px;">
                                 📷 ESP32-CAM ONLY (J3, 5V)<br>
                                 <span style="font-size: 0.75rem; color: var(--text-muted);">0.075–1.7A adjustable limit</span>
                             </div>
@@ -639,171 +677,158 @@
                     </div>
                 </div>
                 <p style="margin-top: 1.5em; font-size: 0.95rem;">
-                    <span class="accent-text">Protection:</span> TVS + ferrite on input, ESD diodes on data lines, reverse blocking, and soft-start on both rails.
+                    <span class="accent-text">Protection:</span> TVS + ferrite on input, ESD diodes on data lines, reverse blocking, and soft-start on both rails. The TPS2553 branch feeds only the ESP32-CAM; the LDO branch supplies all controller and logic circuitry.
                 </p>
             </div>
         </div>
 
-        <!-- SLIDE 7: Firmware & State Machine -->
+        <!-- SLIDE 5: Proof of Concept -->
         <div class="slide">
             <div class="content-center">
-                <h2>Firmware & <span class="accent-text">Intelligence</span></h2>
-                <p>A finite-state machine governs all behavior, from idle monitoring to alarm activation.</p>
-                <div class="state-machine" style="margin-top: 2em;">
-                    <div class="state-box">INIT<br><span style="font-size: 0.75rem; color: var(--text-muted);">Self-test</span></div>
-                    <div class="state-arrow">→</div>
-                    <div class="state-box active-state">ARMED<br><span style="font-size: 0.75rem; color: var(--text-muted);">LED 1Hz blink</span></div>
+                <h2>Proof of <span class="accent-text">Concept</span></h2>
+                <p style="margin-bottom: 1em;">Breadboard validation using an ESP-WROOM-32, laptop webcam, and a Python script with MediaPipe face detection.</p>
+                
+                <div class="poc-diagram">
+                    <!-- Physical Setup -->
+                    <div class="poc-row">
+                        <div class="poc-box highlight">
+                            <div style="font-size: 1.5rem; margin-bottom: 5px;">🔌</div>
+                            Breadboard<br>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">ESP-WROOM-32</span>
+                        </div>
+                        <div class="poc-arrow">—USB—></div>
+                        <div class="poc-box cam-box">
+                            <div style="font-size: 1.5rem; margin-bottom: 5px;">💻</div>
+                            Laptop<br>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Webcam + Python</span>
+                        </div>
+                    </div>
                     
-                    <div></div>
-                    <div></div>
-                    <div class="state-arrow">↓ Sensor</div>
-                    
-                    <div></div>
-                    <div class="state-box" style="border-color: var(--warning);">TRIGGERED<br><span style="font-size: 0.75rem; color: var(--text-muted);">Request CAM</span></div>
-                    <div></div>
-                    
-                    <div></div>
-                    <div class="state-arrow">↓</div>
-                    <div></div>
-                    
-                    <div class="state-box" style="border-color: var(--secondary);">CLEAR<br><span style="font-size: 0.75rem; color: var(--text-muted);">Face visible</span></div>
-                    <div class="state-box" style="border-color: var(--warning);">VISION CHECK<br><span style="font-size: 0.75rem; color: var(--text-muted);">Wait 5s</span></div>
-                    <div class="state-box alarm-state">ALARM<br><span style="font-size: 0.75rem; color: var(--text-muted);">Covered face / timeout</span></div>
-                    
-                    <div></div>
-                    <div class="state-arrow">↑ Disarm</div>
-                    <div></div>
+                    <div class="poc-row" style="margin-top: 10px;">
+                        <div class="poc-box" style="border-color: var(--accent);">
+                            <div style="font-size: 1.2rem;">🟢</div>
+                            Green LED<br>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">CLEAR</span>
+                        </div>
+                        <div style="width: 20px;"></div>
+                        <div class="poc-box" style="border-color: var(--danger);">
+                            <div style="font-size: 1.2rem;">🔴</div>
+                            Red LED<br>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">ALARM</span>
+                        </div>
+                    </div>
+
+                    <!-- Judge Method -->
+                    <div class="judge-box" style="margin-top: 15px;">
+                        <h4>⚖️ Judge Method (MediaPipe)</h4>
+                        <div class="photo-flow">
+                            <div class="photo-box">📸 Photo 1</div>
+                            <div class="poc-arrow">+</div>
+                            <div class="photo-box">📸 Photo 2</div>
+                            <div class="poc-arrow">+</div>
+                            <div class="photo-box">📸 Photo 3</div>
+                        </div>
+                        <div class="poc-arrow" style="margin: 8px 0;">▼</div>
+                        <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px;">Analyze face visibility in each frame</div>
+                        <div class="poc-arrow" style="margin: 8px 0;">▼</div>
+                        <div style="font-size: 0.95rem; font-weight: 600; color: var(--text);">Majority Vote: 2 of 3 photos determine result</div>
+                    </div>
+
+                    <div class="poc-row" style="margin-top: 10px;">
+                        <div class="poc-box result-green">
+                            ✅ CLEAR<br>
+                            <span style="font-size: 0.75rem;">Face visible → Green LED</span>
+                        </div>
+                        <div style="width: 20px;"></div>
+                        <div class="poc-box result-red">
+                            🚨 ALARM<br>
+                            <span style="font-size: 0.75rem;">Covered / no face → Red LED</span>
+                        </div>
+                    </div>
                 </div>
-                <p style="margin-top: 1.5em; font-size: 0.95rem;">
-                    <span class="accent-text">Interrupt-driven</span> sensor inputs with 50ms debounce. 
-                    <span class="accent-text">FreeRTOS</span> tasks for polling, UART, and alarm control.
+
+                <div style="margin-top: 1.5em; text-align: left; max-width: 800px;">
+                    <p style="font-size: 0.95rem; margin-bottom: 0.5em;"><span class="accent-text">What was verified:</span> Sensor trigger logic, UART command simulation, decision algorithm, LED actuator control.</p>
+                    <p style="font-size: 0.95rem;"><span class="accent-text">Limitations:</span> Laptop webcam ≠ ESP32-CAM OV2640; Python prototype is not embedded C++; no real PCB validation; no buzzer integration yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: 3D Render -->
+        <div class="slide">
+            <div class="content-center">
+                <h2>3D Render of the <span class="accent-text">PCB</span></h2>
+                <img src="images/pcb_above.png" alt="SecurityNode PCB Top View" class="pcb-image">
+                <p class="image-caption">
+                    <span class="accent-text">Top:</span> ESP32-C3 (U3) &nbsp;|&nbsp; 
+                    <span class="secondary-text">Center:</span> ESP32-CAM Header (J3) with OV2640 camera &nbsp;|&nbsp; 
+                    <span style="color: var(--danger);">Bottom-left:</span> Buzzer (LS1) + Red LED &nbsp;|&nbsp; 
+                    <span style="color: var(--warning);">Left:</span> USB + Power Chain
                 </p>
-            </div>
-        </div>
-
-        <!-- SLIDE 8: Visual Verification -->
-        <div class="slide">
-            <div class="content-center">
-                <h2>Visual <span class="accent-text">Verification</span></h2>
-                <p>Edge AI on the ESP32-CAM determines threat level before the alarm sounds.</p>
-                <div class="flow-steps">
-                    <div class="flow-step">
-                        <div class="step-num">1</div>
-                        <div class="step-content">
-                            <h4>Sensor Event</h4>
-                            <p>Door opens or PIR detects motion → ESP32-C3 wakes</p>
-                        </div>
-                    </div>
-                    <div class="flow-step">
-                        <div class="step-num">2</div>
-                        <div class="step-content">
-                            <h4>Request Image Analysis</h4>
-                            <p>ESP32-C3 sends UART command to ESP32-CAM</p>
-                        </div>
-                    </div>
-                    <div class="flow-step">
-                        <div class="step-num">3</div>
-                        <div class="step-content">
-                            <h4>Image Capture & Analysis</h4>
-                            <p>OV2640 captures frame; algorithm checks face visibility</p>
-                        </div>
-                    </div>
-                    <div class="flow-step">
-                        <div class="step-num">4</div>
-                        <div class="step-content">
-                            <h4>Decision</h4>
-                            <p><span class="accent-text">CLEAR</span> → Log & return to idle &nbsp;|&nbsp; <span style="color: var(--danger);">SUSPICIOUS</span> → Activate alarm</p>
-                        </div>
-                    </div>
+                <div style="margin-top: 1.5em; text-align: left; max-width: 850px;">
+                    <p style="font-size: 0.95rem;"><span class="accent-text">Physical layout:</span> USB connector at the board edge for easy access; ESP32-CAM header centered to allow ribbon cable clearance; buzzer and red LED positioned for visibility and audibility.</p>
+                    <p style="font-size: 0.95rem; margin-top: 0.5em;"><span class="accent-text">Enclosure idea:</span> Small ABS case with USB cutout, lens hole for the camera module, LED window, and buzzer grill. Mounting holes included for mechanical integration.</p>
                 </div>
-                <p style="margin-top: 1em; font-size: 0.95rem;">All processing is <span class="accent-text">local</span>. No cloud, no subscription, no privacy risk.</p>
             </div>
         </div>
 
-        <!-- SLIDE 9: Modularity & Reliability -->
+        <!-- SLIDE 7: Closing -->
         <div class="slide">
             <div class="content-center">
-                <h2>Modularity & <span class="accent-text">Reliability</span></h2>
-                <p>The system is designed to <em>degrade gracefully</em>. The vision module is an upgrade, not a dependency.</p>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Scenario</th>
-                            <th>ESP32-CAM State</th>
-                            <th>System Behavior</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Full Operation</td>
-                            <td>Connected & responsive</td>
-                            <td>Vision-assisted alarm mode</td>
-                        </tr>
-                        <tr>
-                            <td>Timeout</td>
-                            <td>Connected, no response (5s)</td>
-                            <td>Fallback to <span style="color: var(--danger);">basic alarm</span></td>
-                        </tr>
-                        <tr>
-                            <td>Disconnected</td>
-                            <td>Not installed</td>
-                            <td>Basic sensor → alarm mode</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p style="margin-top: 1.5em; font-size: 0.95rem;">
-                    <span class="accent-text">Power rails remain stable</span> without the CAM: the TPS2553 5V branch simply idles unloaded (no minimum load required), and the AP2112K 3.3V rail gains additional current headroom. No rails are "lost" — the regulator capacity designed for the CAM becomes safety margin for the controller.
-                </p>
-                <div class="card-grid" style="max-width: 700px; margin-top: 2em;">
-                    <div class="card" style="padding: 20px;">
-                        <h3>🔧 Modular</h3>
-                        <p>Add or remove the CAM without changing firmware logic</p>
+                <h2>Closing & <span class="accent-text">Reflection</span></h2>
+                <div class="reflection-grid">
+                    <div class="reflection-item">
+                        <h4>🔧 Greatest Technical Difficulty</h4>
+                        <p>Designing the power architecture to safely feed <strong>two ESP32 modules</strong> from a single USB source while adding overcurrent, ESD, and transient protection. Balancing the current budget and selecting regulators (TPS2553 for the CAM, AP2112K LDO for the controller) required careful trade-offs to ensure neither rail would collapse under peak load.</p>
                     </div>
-                    <div class="card" style="padding: 20px;">
-                        <h3>🛡️ Robust</h3>
-                        <p>Watchdog timer, ESD protection, current limiting, soft-start</p>
+                    <div class="reflection-item">
+                        <h4>⭐ Best Resolved Part</h4>
+                        <p>The <strong>power tree</strong>. Separating the ESP32-CAM onto its own current-limited 5V branch while keeping the controller and logic on a clean 3.3V LDO rail ensures stability even if the vision module fails or is disconnected. The modular power design matches the modular system philosophy.</p>
+                    </div>
+                    <div class="reflection-item">
+                        <h4>🚀 Next Version Improvement</h4>
+                        <p>Integrate Wi-Fi for remote monitoring and alerts; add MQTT or a lightweight web dashboard. Implement a more sophisticated vision model directly on the ESP32-CAM instead of relying on a laptop prototype. Add OTA firmware update capability.</p>
+                    </div>
+                    <div class="reflection-item">
+                        <h4>📦 What Is Still Needed</h4>
+                        <p>Send the PCB for fabrication and assembly; validate the full system with the real ESP32-CAM module and its OV2640 camera; tune the face-coverage algorithm for real-world lighting conditions; design and 3D print an enclosure.</p>
+                    </div>
+                    <div class="reflection-item">
+                        <h4>🎓 What I Learned</h4>
+                        <p>Electronic design is not just about choosing components — it is about <strong>anticipating failure modes</strong>. The decision to make the system degrade gracefully (fallback to basic alarm without the camera) taught me the importance of designing for reliability, not just functionality. A security system that fails silently is worse than one that fails loudly.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- SLIDE 10: Conclusion & Future -->
+        <!-- SLIDE 8: References -->
         <div class="slide">
             <div class="content-center">
-                <h2>Conclusion & <span class="accent-text">Future Work</span></h2>
-                <p style="margin-bottom: 1.5em;">SecurityNode demonstrates how embedded electronics, edge AI, and modular design can create affordable, privacy-first security systems.</p>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 900px; text-align: left;">
-                    <div>
-                        <h3>✅ What We Built</h3>
-                        <ul class="feature-list">
-                            <li>Custom PCB with regulated power & protection</li>
-                            <li>Dual-ESP32 architecture (controller + vision)</li>
-                            <li>State-machine firmware with UART protocol</li>
-                            <li>Local face-coverage detection</li>
-                            <li>Graceful degradation to basic alarm</li>
-                        </ul>
+                <h2><span class="accent-text">References</span></h2>
+                <p style="margin-bottom: 1.5em;">Technical sources that supported the design decisions. <em>(Add specific links and document numbers from your Windows files.)</em></p>
+                
+                <div style="max-width: 800px; text-align: left;">
+                    <div class="ref-category">
+                        <h4>📄 Microcontroller Datasheets</h4>
+                        <p>ESP32-C3-WROOM-02-N4 datasheet, ESP32-CAM (AI-Thinker) module documentation, OV2640 camera sensor datasheet</p>
                     </div>
-                    <div>
-                        <h3>🚀 What's Next</h3>
-                        <ul class="feature-list">
-                            <li>Wi-Fi remote monitoring (MQTT)</li>
-                            <li>OTA firmware updates</li>
-                            <li>Mobile web dashboard</li>
-                            <li>Host-side configuration tools</li>
-                            <li>Extended UART protocol (streaming, sensitivity)</li>
-                        </ul>
+                    <div class="ref-category">
+                        <h4>🔌 Power Components</h4>
+                        <p>AP2112K-3.3TRG1 LDO datasheet, TPS2553DBVR current-limited switch datasheet & application note, DN2302S MOSFET datasheet</p>
+                    </div>
+                    <div class="ref-category">
+                        <h4>🛡️ Protection & Passive Components</h4>
+                        <p>SMF5.0CA TVS diode datasheet, USBLC6-2P6 ESD protection datasheet, HC-SR501 PIR module datasheet</p>
+                    </div>
+                    <div class="ref-category">
+                        <h4>💻 Software & Libraries</h4>
+                        <p>MediaPipe Face Detection documentation, Python OpenCV library, ESP-IDF / Arduino-ESP32 core documentation</p>
+                    </div>
+                    <div class="ref-category">
+                        <h4>📐 PCB Design References</h4>
+                        <p>Professional open-source PCB designs, manufacturer design guides, Altium Designer documentation</p>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- SLIDE 11: Thank You -->
-        <div class="slide thank-you">
-            <div class="content-center">
-                <h1>Thank You</h1>
-                <p class="subtitle">Questions & Discussion</p>
-                <p class="author" style="margin-top: 2em;">Jeronimo Vargas Orozco</p>
-                <p style="margin-top: 0.5em; font-size: 1rem;">SecurityNode — Embedded Security with Visual Verification</p>
             </div>
         </div>
     </div>
@@ -861,7 +886,6 @@
             }
         });
 
-        // Touch swipe support
         let touchStartX = 0;
         let touchEndX = 0;
 
