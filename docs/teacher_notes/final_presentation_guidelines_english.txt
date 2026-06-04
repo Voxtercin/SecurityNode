@@ -1,0 +1,155 @@
+Suggested structure and expected elements for the final presentations (Submit the deliverable as a PDF)
+
+For the final presentations of the course projects, it is suggested that the presentation be organized in a clear, brief, and evidence-oriented manner. Each presentation will last approximately [duration], followed by a short period for questions or transition.
+
+The presentation should show not only the final result, but also the design process, the technical decisions made, and the evidence produced during the development of the project.
+
+The following structure is recommended:
+
+1. Project title, name, and email address
+
+Include the project title, the student's full name, and institutional email address.
+
+It is also recommended to begin with a brief phrase that allows the audience to quickly understand the purpose of the project.
+
+2. Description in natural language
+
+Explain the project in a simple way, as if presenting it to someone who is not familiar with the technical details.
+
+The description should answer questions such as:
+
+What problem, need, or application does the project address?
+Who could use this product or system?
+What is its main function?
+What behavior is expected from the system?
+
+3. Block diagram
+
+Present the general architecture of the system using a block diagram.
+
+The diagram should make it possible to identify the main modules, for example:
+
+Power supply.
+Microcontroller or control unit.
+Sensors.
+Actuators.
+Communication interfaces.
+Display, indicators, or interaction elements.
+Power stages, conditioning stages, or protection stages, if applicable.
+
+In this part, the student is expected to explain how the blocks are related to one another and what the function of each one is.
+
+4. Power tree
+
+Present the power tree of the project, indicating how energy is distributed within the system.
+
+It is recommended to include:
+
+Main power supply.
+Voltage levels used.
+Regulators or converters used.
+Blocks powered by each voltage level.
+Estimated currents or approximate power consumption, if available.
+Protection considerations, connectors, batteries, chargers, or switches, if applicable.
+
+This section is important to justify that the electronic design adequately considers the energy requirements of the system.
+
+5. Product proof of concept
+
+Show the proof of concept developed during the course.
+
+This section should provide evidence that the idea was explored, validated, or partially implemented before or during the PCB design.
+
+It may include:
+
+Breadboard assembly.
+Testing with development modules.
+Preliminary code.
+Testing of sensors, actuators, or communication.
+Photographs or videos of the operation.
+Basic measurements.
+Partial validations of a critical function.
+
+It is recommended to explain what was verified through the proof of concept and what limitations were found.
+
+6. Schematic diagram
+
+Present the circuit schematic, highlighting the most important parts.
+
+It is not necessary to explain every connection, but the main decisions should be justified:
+
+Selection of the microcontroller, sensors, actuators, or modules.
+Voltage regulators.
+Programming or communication interfaces.
+Pull-up or pull-down resistors.
+Voltage dividers.
+Protections.
+Connectors.
+Power stages or signal conditioning stages.
+
+The presentation should show that the schematic was built based on well-reasoned design decisions.
+
+7. PCB
+
+Present the PCB design and explain the criteria used in its construction.
+
+It is recommended to mention:
+
+Size and shape of the board.
+Component placement.
+Functional organization of the PCB.
+Critical traces.
+Separation between power signals, digital signals, analog signals, or communication signals.
+Ground or power planes.
+Manufacturing and assembly considerations.
+Connectors, test points, or interaction elements.
+
+The idea is to explain why the PCB was organized in that way and what aspects were taken into account to make it manufacturable and functional.
+
+8. 3D render of the PCB
+
+Show the 3D render of the board as visual support to understand the final product.
+
+In this section, you may comment on:
+
+General appearance of the board.
+Physical location of connectors, buttons, indicators, or sensors.
+Relationship between the PCB and a possible enclosure, mounting system, or final product.
+Possible assembly or mechanical integration difficulties.
+
+9. Closing
+
+End with a brief reflection on the current state of the project and the learning obtained.
+
+It is recommended to answer:
+
+What was the greatest technical difficulty?
+Which part of the design was best resolved?
+What aspect should be improved in a next version?
+What is still needed to manufacture, assemble, or fully validate the board?
+What did I learn about electronic design during the development of the project?
+
+Not all projects are expected to be completely finished, but each presentation is expected to clearly show the progress achieved, the decisions made, and the evidence available.
+
+10. References
+
+Include a final slide with the references used during the design.
+
+These may include:
+
+Component datasheets.
+Application notes.
+Manufacturer design guides.
+Documentation for modules, sensors, or microcontrollers.
+Repositories, examples, or libraries used.
+Standards, technical tutorials, or academic resources consulted.
+
+The references should make it possible to identify the technical sources that supported the design decisions.
+
+General recommendations
+
+The presentation should be concrete, visual, and evidence-based. It is preferable to show diagrams, screenshots, photographs, measurements, renders, or test results instead of using slides with too much text.
+
+Each student should be prepared to explain their design from an electronic point of view, including the system architecture, power distribution, proof of concept, schematic, PCB, 3D render, and main technical references used.
+
+The presentation should focus on the design decisions and the evidence produced during the course.

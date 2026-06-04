@@ -18,21 +18,23 @@ When a door-opening or motion event is detected, the ESP32-C3 can request the ES
 
 ```
 SecurityNode/
-├── assets/          # PCB renders, layout screenshots, and system diagrams
+├── assets/              # PCB renders, schematic blocks, and source PDFs
 ├── docs/
-│   ├── system/      # System architecture and requirements
-│   ├── hardware/    # Hardware interface and design documentation
-│   ├── firmware/    # Firmware architecture and protocols
-│   └── software/    # Host-side tools and utilities
+│   ├── hardware/        # Hardware interface and design documentation
+│   ├── firmware/        # Firmware architecture and protocols
+│   ├── presentation/    # Final presentation (HTML + PDF)
+│   ├── software/        # Host-side tools and utilities
+│   ├── system/          # System architecture and requirements
+│   └── teacher_notes/   # Presentation guidelines
 ├── hardware/
-│   └── altium/      # Altium Designer project, schematic, and PCB files
+│   └── altium/          # Altium Designer project files
 ├── firmware/
-│   ├── esp32c3/     # Main controller firmware
-│   └── esp32cam/    # Vision module firmware
+│   ├── esp32c3/         # Main controller firmware
+│   └── esp32cam/        # Vision module firmware
 ├── software/
-│   └── host/        # PC-side configuration and monitoring tools
-├── tests/           # Validation procedures and bring-up checklists
-└── tools/           # Helper scripts, export helpers, and generators
+│   └── host/            # PC-side configuration and monitoring tools
+├── tests/               # Validation procedures and bring-up checklists
+└── tools/               # Helper scripts, export helpers, and generators
 ```
 
 ## Modular Architecture

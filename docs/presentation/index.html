@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecurityNode - Proyecto Final de Diseño Electrónico</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0b0e14;
+            --bg-card: #121820;
+            --bg-card2: #161d28;
+            --text: #e8ecf1;
+            --text-muted: #8a96a6;
+            --accent: #00d4aa;
+            --accent-dim: #00d4aa22;
+            --secondary: #4a9eff;
+            --secondary-dim: #4a9eff22;
+            --danger: #ff4757;
+            --danger-dim: #ff475722;
+            --warning: #ffa502;
+            --warning-dim: #ffa50222;
+            --border: #ffffff12;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4vh 6vw;
+            animation: fadeIn 0.4s ease;
+            position: relative;
+        }
+
+        .slide.active { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .progress-bar {
+            position: fixed; top: 0; left: 0;
+            height: 3px; background: var(--accent);
+            transition: width 0.3s ease; z-index: 1000;
+        }
+
+        .slide-counter {
+            position: fixed; top: 18px; right: 28px;
+            font-size: 13px; color: var(--text-muted);
+            z-index: 1000; letter-spacing: 1px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .nav-hint {
+            position: fixed; bottom: 18px; left: 50%;
+            transform: translateX(-50%);
+            display: flex; gap: 12px; z-index: 1000;
+        }
+
+        .nav-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 8px 18px; border-radius: 6px;
+            cursor: pointer; font-size: 13px;
+            transition: all 0.2s ease;
+        }
+        .nav-btn:hover {
+            background: var(--accent-dim);
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        h1 {
+            font-size: clamp(2.4rem, 5vw, 4.2rem);
+            font-weight: 700; line-height: 1.1;
+            margin-bottom: 0.4em;
+            background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h2 {
+            font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+            font-weight: 600; margin-bottom: 0.6em;
+            color: var(--text);
+        }
+
+        h3 {
+            font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+            font-weight: 600; margin-bottom: 0.4em;
+            color: var(--accent);
+        }
+
+        h4 {
+            font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+            font-weight: 600; margin-bottom: 0.3em;
+            color: var(--accent);
+        }
+
+        p, li {
+            font-size: clamp(0.95rem, 1.4vw, 1.2rem);
+            line-height: 1.55; color: var(--text-muted);
+            max-width: 800px;
+        }
+
+        .accent-text { color: var(--accent); font-weight: 600; }
+        .secondary-text { color: var(--secondary); font-weight: 600; }
+
+        .content-center {
+            text-align: center;
+            max-width: 1050px;
+            width: 100%;
+        }
+
+        .subtitle {
+            font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+            color: var(--text-muted);
+            margin-bottom: 1.5em;
+        }
+
+        .author {
+            font-size: clamp(1rem, 1.4vw, 1.2rem);
+            color: var(--accent);
+            margin-top: 0.4em;
+            letter-spacing: 1px;
+        }
+
+        .email {
+            font-size: clamp(0.85rem, 1.1vw, 1rem);
+            color: var(--text-muted);
+            margin-top: 0.2em;
+        }
+
+        .context-badge {
+            display: inline-block;
+            background: var(--accent-dim);
+            color: var(--accent);
+            padding: 6px 14px; border-radius: 16px;
+            font-size: 13px; font-weight: 600;
+            letter-spacing: 1px; text-transform: uppercase;
+            margin-bottom: 1.2em;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 20px; width: 100%;
+            max-width: 1000px; margin-top: 1.5em;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 24px; text-align: center;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            overflow: hidden;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+        }
+        .card h3 { margin-bottom: 8px; font-size: 1.05rem; }
+        .card p { font-size: 0.9rem; }
+
+        .diagram-box {
+            background: var(--bg-card);
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            padding: 12px 20px; text-align: center;
+            font-weight: 600; color: var(--text);
+            min-width: 130px; font-size: 0.9rem;
+        }
+        .diagram-box.secondary { border-color: var(--secondary); }
+        .diagram-box.danger { border-color: var(--danger); }
+        .diagram-box.warning { border-color: var(--warning); }
+        .diagram-box.controller { border-color: var(--accent); }
+        .diagram-arrow { color: var(--text-muted); font-size: 1.3rem; padding: 4px; }
+        .diagram-row {
+            display: flex; align-items: center;
+            justify-content: center; gap: 12px;
+            flex-wrap: wrap; margin: 8px 0;
+        }
+        .diagram-container {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 8px; margin: 1.5em 0;
+        }
+        .diagram-label {
+            color: var(--text-muted); font-size: 0.8rem;
+            text-align: center; max-width: 220px;
+        }
+
+        .power-tree {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 6px; margin: 1.2em 0;
+        }
+        .power-level {
+            display: flex; align-items: flex-start;
+            gap: 16px; flex-wrap: wrap; justify-content: center;
+        }
+        .power-box {
+            background: var(--bg-card);
+            border: 2px solid var(--secondary);
+            border-radius: 8px; padding: 10px 18px;
+            text-align: center; font-size: 0.88rem;
+        }
+        .power-box.controller { border-color: var(--accent); }
+        .power-box.danger-box { border-color: var(--danger); }
+        .arrow-down { color: var(--text-muted); font-size: 1rem; }
+
+        .pcb-image {
+            max-width: 100%;
+            max-height: 50vh;
+            border-radius: 10px;
+            border: 2px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+        .image-caption {
+            margin-top: 8px; font-size: 0.85rem;
+            color: var(--text-muted); text-align: center;
+        }
+
+        .schematic-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px; max-width: 1050px;
+            margin: 0.8em 0;
+        }
+        .schematic-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px; padding: 10px;
+            text-align: center;
+            overflow: hidden;
+        }
+        .schematic-item img {
+            max-width: 100%; max-height: 160px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            background: #fff;
+        }
+        .schematic-item h4 {
+            color: var(--accent); font-size: 0.85rem;
+            margin-top: 6px; margin-bottom: 3px;
+        }
+        .schematic-item p {
+            font-size: 0.75rem; color: var(--text-muted); margin: 0;
+        }
+
+        .poc-diagram {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 10px;
+            margin: 1em 0; max-width: 900px;
+        }
+        .poc-row {
+            display: flex; align-items: center;
+            justify-content: center; gap: 14px; flex-wrap: wrap;
+        }
+        .poc-box {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 8px; padding: 10px 16px;
+            text-align: center; font-size: 0.85rem;
+            min-width: 130px;
+        }
+        .poc-box.highlight { border-color: var(--accent); }
+        .poc-box.cam-box { border-color: var(--secondary); }
+        .poc-box.result-green { border-color: var(--accent); background: var(--accent-dim); }
+        .poc-box.result-red { border-color: var(--danger); background: var(--danger-dim); }
+        .poc-arrow { color: var(--text-muted); font-size: 1.1rem; }
+        .judge-box {
+            background: var(--bg-card);
+            border: 2px dashed var(--warning);
+            border-radius: 8px; padding: 10px 18px;
+            text-align: center; margin: 6px 0;
+        }
+        .judge-box h4 { color: var(--warning); margin-bottom: 6px; }
+        .photo-flow {
+            display: flex; align-items: center;
+            justify-content: center; gap: 6px; margin: 6px 0;
+        }
+        .photo-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 4px; padding: 5px 8px;
+            font-size: 0.72rem;
+        }
+
+        .reflection-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px; max-width: 950px;
+            text-align: left; margin-top: 1em;
+        }
+        .reflection-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px; padding: 14px 18px;
+            overflow: hidden;
+        }
+        .reflection-item h4 {
+            color: var(--accent); font-size: 0.9rem; margin-bottom: 5px;
+        }
+        .reflection-item p { font-size: 0.82rem; margin: 0; }
+
+        .ref-category {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px; padding: 8px 14px;
+            margin: 5px 0; text-align: left;
+            overflow: hidden;
+        }
+        .ref-category h4 {
+            color: var(--accent); font-size: 0.88rem; margin-bottom: 3px;
+        }
+        .ref-category p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
+
+        .pcb-2d-container {
+            display: flex; gap: 16px;
+            justify-content: center; align-items: center;
+            flex-wrap: wrap; margin: 0.6em 0;
+        }
+        .pcb-2d-img {
+            max-width: 100%; max-height: 42vh;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+        }
+
+        @media (max-width: 768px) {
+            .slide { padding: 3vh 4vw; }
+            .card-grid { grid-template-columns: 1fr; }
+            .diagram-row { flex-direction: column; }
+            .power-level { flex-direction: column; align-items: center; }
+            .poc-row { flex-direction: column; }
+            .schematic-grid { grid-template-columns: 1fr 1fr; }
+            .reflection-grid { grid-template-columns: 1fr; }
+            .pcb-2d-img { max-width: 90%; }
+        }
+
+        /* ===== PRINT / PDF STYLES ===== */
+        @media print {
+            * { animation: none !important; transition: none !important; }
+
+            html, body {
+                width: 297mm !important;
+                height: auto !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: var(--bg) !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                overflow: visible !important;
+            }
+
+            @page {
+                size: A4 landscape;
+                margin: 0;
+            }
+
+            .progress-bar, .slide-counter, .nav-hint {
+                display: none !important;
+            }
+
+            .presentation {
+                display: block !important;
+                width: 297mm !important;
+                height: auto !important;
+                overflow: visible !important;
+                position: static !important;
+                transform: none !important;
+            }
+
+            .slide {
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                position: relative !important;
+                transform: none !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
+                width: 297mm !important;
+                height: 167mm !important;
+                min-height: 167mm !important;
+                max-height: 167mm !important;
+                padding: 6mm 8mm !important;
+                overflow: hidden !important;
+                page-break-after: always !important;
+                break-after: page !important;
+                box-sizing: border-box !important;
+            }
+
+            .slide:last-child {
+                page-break-after: auto !important;
+                break-after: auto !important;
+            }
+
+            .content-center { max-width: 285mm; }
+
+            h1 { font-size: 2rem !important; }
+            h2 { font-size: 1.4rem !important; margin-bottom: 0.3em !important; }
+            h3 { font-size: 0.95rem !important; }
+            h4 { font-size: 0.82rem !important; }
+            p, li { font-size: 0.78rem !important; line-height: 1.4 !important; }
+
+            .subtitle { font-size: 1rem !important; margin-bottom: 0.8em !important; }
+            .author { font-size: 0.95rem !important; }
+            .email { font-size: 0.8rem !important; }
+            .context-badge { font-size: 11px !important; padding: 4px 10px !important; margin-bottom: 0.6em !important; }
+
+            .card-grid { gap: 8px !important; margin-top: 0.6em !important; }
+            .card { padding: 8px !important; }
+            .card h3 { font-size: 0.85rem !important; margin-bottom: 4px !important; }
+            .card p { font-size: 0.72rem !important; }
+
+            .pcb-image { max-height: 70mm !important; }
+            .pcb-2d-img { max-height: 80mm !important; }
+            .image-caption { font-size: 0.7rem !important; margin-top: 4px !important; }
+
+            .schematic-grid { gap: 6px !important; margin: 0.4em 0 !important; }
+            .schematic-item { padding: 6px !important; }
+            .schematic-item img { max-height: 65mm !important; }
+            .schematic-item h4 { font-size: 0.7rem !important; }
+            .schematic-item p { font-size: 0.62rem !important; }
+
+            .diagram-container { margin: 0.5em 0 !important; gap: 4px !important; }
+            .diagram-row { margin: 3px 0 !important; gap: 6px !important; }
+            .diagram-box { padding: 6px 10px !important; min-width: 80px !important; font-size: 0.7rem !important; }
+            .diagram-label { font-size: 0.7rem !important; }
+
+            .power-tree { margin: 0.5em 0 !important; gap: 3px !important; }
+            .power-box { padding: 4px 10px !important; font-size: 0.7rem !important; }
+            .arrow-down { font-size: 0.8rem !important; }
+
+            .poc-diagram { margin: 0.5em 0 !important; gap: 5px !important; }
+            .poc-box { padding: 6px 10px !important; font-size: 0.7rem !important; min-width: 90px !important; }
+            .judge-box { padding: 6px 12px !important; }
+            .judge-box h4 { font-size: 0.8rem !important; }
+            .photo-box { font-size: 0.62rem !important; padding: 3px 6px !important; }
+
+            .reflection-grid { gap: 8px !important; margin-top: 0.6em !important; }
+            .reflection-item { padding: 8px 12px !important; }
+            .reflection-item h4 { font-size: 0.78rem !important; }
+            .reflection-item p { font-size: 0.68rem !important; }
+
+            .ref-category { padding: 6px 10px !important; margin: 3px 0 !important; }
+            .ref-category h4 { font-size: 0.75rem !important; }
+            .ref-category p { font-size: 0.65rem !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="slide-counter" id="slideCounter">1 / 10</div>
+
+    <div class="presentation">
+
+        <!-- SLIDE 1: Título -->
+        <div class="slide active">
+            <div class="content-center">
+                <div class="context-badge">Proyecto Final de Diseño Electrónico</div>
+                <h1>SecurityNode</h1>
+                <p class="subtitle">Sistema de seguridad embebido con verificación visual de amenazas</p>
+                <p class="author">Jerónimo Vargas Orozco</p>
+                <p class="email">jevargaso@unal.edu.co</p>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: Descripción -->
+        <div class="slide">
+            <div class="content-center">
+                <h2>Descripción en lenguaje <span class="accent-text">natural</span></h2>
+                <p style="margin-bottom: 0.8em;">Plataforma de seguridad embebida que detecta intrusiones físicas y las verifica con visión por computador, funcionando completamente en el borde sin depender de la nube.</p>
+                <div class="card-grid" style="max-width: 900px;">
+                    <div class="card">
+                        <h3 style="color: var(--danger);">El Problema</h3>
+                        <p>Las alarmas tradicionales detectan eventos pero no indican qué los provocó. Mascotas, viento o usuarios autorizados generan la misma sirena que un intruso real.</p>
+                    </div>
+                    <div class="card">
+                        <h3 style="color: var(--accent);">Usuarios</h3>
+                        <p>Propietarios de viviendas y pequeños negocios que requieren seguridad asequible, respetuosa con la privacidad y sin suscripciones ni almacenamiento en la nube.</p>
+                    </div>
+                    <div class="card">
+                        <h3 style="color: var(--secondary);">Función Principal</h3>
+                        <p>Sensores de puerta y PIR detectan intrusiones. Al activarse, el sistema captura una imagen y decide: amenaza real o falsa alarma.</p>
+                    </div>
+                    <div class="card">
+                        <h3 style="color: var(--warning);">Comportamiento</h3>
+                        <p><strong>Alarma ON:</strong> LED rojo + buzzer si rostro cubierto o timeout.<br><strong>Alarma OFF:</strong> Se registra el evento y vuelve a reposo.<br><strong>Sin cámara:</strong> Opera como alarma básica.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: Diagrama de bloques -->
+        <div class="slide">
+            <div class="content-center">
+                <h2>Diagrama de <span class="accent-text">bloques</span></h2>
+                <div class="diagram-container">
+                    <div class="diagram-row">
+                        <div class="diagram-box warning" style="min-width: 150px;">
+                            Conexión USB 5V<br>
+                            <span style="font-size: 0.72rem; color: var(--text-muted);">+ Etapa de protección</span>
+                        </div>
+                    </div>
+                    <div class="diagram-row">
+                        <div class="diagram-box" style="border-color: var(--danger); min-width: 110px;">
+                            Riel 5V<br>
+                            <span style="font-size: 0.68rem; color: var(--text-muted);">TPS2553 → ESP32-CAM</span>
+                        </div>
+                        <div class="diagram-box controller" style="min-width: 110px;">
+                            Riel 3.3V<br>
+                            <span style="font-size: 0.68rem; color: var(--text-muted);">AP2112K LDO → Lógica</span>
+                        </div>
+                    </div>
+                    <div class="diagram-row" style="margin-top: 10px;">
+                        <div class="diagram-box controller">
+                            ESP32-C3<br>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">Controlador</span>
+                        </div>
+                        <div class="diagram-arrow">⇄ UART</div>
+                        <div class="diagram-box secondary">
+                            ESP32-CAM<br>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">Visión + OV2640</span>
+                        </div>
+                    </div>
+                    <div class="diagram-row" style="margin-top: 10px;">
+                        <div class="diagram-box secondary" style="min-width: 95px;">Sensor Reed</div>
+                        <div class="diagram-box secondary" style="min-width: 95px;">Sensor PIR</div>
+                        <div style="width: 24px;"></div>
+                        <div class="diagram-box danger" style="min-width: 95px;">Buzzer (MOSFET)</div>
+                        <div class="diagram-box danger" style="min-width: 95px;">LED Rojo</div>
+                    </div>
+                    <div class="diagram-row" style="margin-top: 8px; gap: 24px;">
+                        <div class="diagram-label">Sensores → Entradas GPIO (ESP32-C3)</div>
+                        <div class="diagram-label">Salidas GPIO (ESP32-C3) → Actuadores</div>
+                    </div>
+                </div>
+                <p style="font-size: 0.85rem;">Al activarse un sensor, el controlador solicita una imagen al ESP32-CAM. Si el rostro está cubierto, se activan el LED rojo y el buzzer.</p>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: Árbol de potencia -->
+        <div class="slide">
+            <div class="content-center">
+                <h2>Árbol de <span class="accent-text">potencia</span></h2>
+                <div class="power-tree">
+                    <div class="power-box" style="border-color: var(--warning);">
+                        Entrada USB 5V (J2)
+                    </div>
+                    <div class="arrow-down">▼</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">TVS (SMF5.0CA) + Ferrita + USBLC6 → Protección ESD/EMI</div>
+                    <div class="arrow-down">▼</div>
+                    <div class="power-box" style="border-color: var(--secondary);">
+                        Riel 5V protegido
+                    </div>
+                    <div class="arrow-down">▼</div>
+                    <div class="power-level">
+                        <div class="power-box danger-box">
+                            Rama 1 — TPS2553 (U4)<br>
+                            <span style="font-size: 0.68rem; color: var(--text-muted);">Switch de potencia con límite de corriente</span>
+                            <div class="arrow-down">▼</div>
+                            <div class="power-box danger-box" style="margin-top: 5px;">
+ESP32-CAM (J3, 5V)<br>
+                            <span style="font-size: 0.68rem; color: var(--text-muted);">Alimentación controlada por TPS2553, 0.075–1.7A</span>
+                            </div>
+                        </div>
+                        <div style="width: 24px;"></div>
+                        <div class="power-box controller">
+                            Rama 2 — AP2112K (U2)<br>
+                            <span style="font-size: 0.68rem; color: var(--text-muted);">LDO 600mA</span>
+                            <div class="arrow-down">▼</div>
+                            <div class="power-box controller" style="margin-top: 5px;">
+                                Riel 3.3V<br>
+                                <span style="font-size: 0.68rem; color: var(--text-muted);">ESP32-C3, lógica, sensores, I/O</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p style="margin-top: 0.8em; font-size: 0.82rem;">
+                    <span class="accent-text">¿Por qué rieles separados?</span> El ESP32-CAM consume picos altos de corriente durante WiFi/cámara. Aislarlo en su propia rama de 5V con límite de corriente evita caídas de voltaje en el riel de 3.3V, garantizando estabilidad del controlador.
+                </p>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: Prueba de concepto -->
+        <div class="slide">
+            <div class="content-center">
+                <h2>Prueba de <span class="accent-text">concepto</span></h2>
+                <p style="margin-bottom: 0.6em;">Prototipo en protoboard con ESP-WROOM-32, webcam de laptop y script Python con MediaPipe.</p>
+                <div class="poc-diagram">
+                    <div class="poc-row">
+                        <div class="poc-box highlight">
+                            Protoboard<br>
+                            <span style="font-size: 0.7rem; color: var(--text-muted);">ESP-WROOM-32</span>
+                        </div>
+                        <div class="poc-arrow">—USB→</div>
+                        <div class="poc-box cam-box">
+                            Laptop<br>
+                            <span style="font-size: 0.7rem; color: var(--text-muted);">Webcam + Python</span>
+                        </div>
+                    </div>
+                    <div class="judge-box">
+                        <h4>Método de jurado (MediaPipe)</h4>
+                        <div class="photo-flow">
+                            <div class="photo-box">Fotograma 1</div>
+                            <div class="poc-arrow">+</div>
+                            <div class="photo-box">Fotograma 2</div>
+                            <div class="poc-arrow">+</div>
+                            <div class="photo-box">Fotograma 3</div>
+                        </div>
+                        <div class="poc-arrow" style="margin: 4px 0;">▼</div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted);">Analizar visibilidad del rostro en cada fotograma</div>
+                        <div class="poc-arrow" style="margin: 4px 0;">▼</div>
+                        <div style="font-size: 0.82rem; font-weight: 600; color: var(--text);">Votación mayoritaria: 2 de 3 fotogramas determinan el resultado</div>
+                    </div>
+                    <div class="poc-row">
+                        <div class="poc-box result-green">
+                            DESPEJADO<br>
+                            <span style="font-size: 0.68rem;">Rostro visible → LED verde</span>
+                        </div>
+                        <div style="width: 16px;"></div>
+                        <div class="poc-box result-red">
+                            ALARMA<br>
+                            <span style="font-size: 0.68rem;">Cubierto/sin rostro → LED rojo</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 0.6em; text-align: left; max-width: 800px;">
+                    <p style="font-size: 0.78rem; margin-bottom: 0.2em;"><span class="accent-text">Validado:</span> Lógica de sensores, simulación UART, algoritmo de decisión, control de LED.</p>
+                    <p style="font-size: 0.78rem;"><span class="accent-text">Limitaciones:</span> Webcam de laptop ≠ OV2640; Python ≠ C++ embebido; sin PCB real; buzzer pendiente.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: Diagrama esquemático -->
+        <div class="slide">
+            <div class="content-center">
+                <h2>Diagrama <span class="accent-text">esquemático</span></h2>
+                <div class="schematic-grid">
+                    <div class="schematic-item">
+                        <img src="images/schematic_blocks/power.png" alt="Bloque de potencia">
+                        <h4>Potencia</h4>
+                        <p>Entrada USB, protección, ferrita, regulador AP2112K-3.3</p>
+                    </div>
+                    <div class="schematic-item">
+                        <img src="images/schematic_blocks/esp32c3.png" alt="ESP32-C3">
+                        <h4>ESP32-C3</h4>
+                        <p>Unidad de control principal, GPIO, arranque y programación</p>
+                    </div>
+                    <div class="schematic-item">
+                        <img src="images/schematic_blocks/inputs.png" alt="Entradas">
+                        <h4>Entradas</h4>
+                        <p>Sensor de puerta y sensor PIR</p>
+                    </div>
+                    <div class="schematic-item">
+                        <img src="images/schematic_blocks/outputs.png" alt="Salidas">
+                        <h4>Salidas</h4>
+                        <p>Buzzer mediante MOSFET y LED de alarma</p>
+                    </div>
+                    <div class="schematic-item">
+                        <img src="images/schematic_blocks/esp32cam.png" alt="Alimentación ESP32-CAM">
+                        <h4>Alimentación ESP32-CAM</h4>
+                        <p>Switch de potencia TPS2553 controla la alimentación de la cámara; rama 5V separada de la lógica principal</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: PCB -->
+        <div class="slide">
+            <div class="content-center">
+                <h2>PCB</h2>
+                <p style="margin-bottom: 0.4em; font-size: 0.85rem;">PCB de 2 capas diseñado en Altium Designer.</p>
+                <div class="pcb-2d-container">
+                    <img src="images/pcb_2d.png" alt="Layout PCB 2D" class="pcb-2d-img">
+                </div>
+                <div class="card-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 900px; gap: 10px; margin-top: 0.5em;">
+                    <div class="card" style="padding: 10px; text-align: left;">
+                        <h4 style="font-size: 0.82rem;">Ubicación de componentes</h4>
+                        <p style="font-size: 0.72rem;">Conector USB (J2) en el borde. ESP32-C3 centrado. Header ESP32-CAM (J3) con espacio para cable plano.</p>
+                    </div>
+                    <div class="card" style="padding: 10px; text-align: left;">
+                        <h4 style="font-size: 0.82rem;">Separación potencia/señal</h4>
+                        <p style="font-size: 0.72rem;">TPS2553 y AP2112K agrupados arriba-izquierda. Lógica y MCU en centro-derecha.</p>
+                    </div>
+                    <div class="card" style="padding: 10px; text-align: left;">
+                        <h4 style="font-size: 0.82rem;">Planos de tierra y potencia</h4>
+                        <p style="font-size: 0.72rem;">Plano de masa en capa inferior. Desacoplo: condensadores bulk cerca de reguladores, 100nF locales en pines VCC.</p>
+                    </div>
+                    <div class="card" style="padding: 10px; text-align: left;">
+                        <h4 style="font-size: 0.82rem;">Fabricación</h4>
+                        <p style="font-size: 0.72rem;">Reglas DRC estándar. 4 agujeros de montaje. Conectores accesibles desde bordes. Silk screen completo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: Render 3D de la PCB -->
+        <div class="slide">
+            <div class="content-center">
+                <h2>Render 3D de la <span class="accent-text">PCB</span></h2>
+                <div style="display: flex; gap: 14px; justify-content: center; align-items: flex-start; flex-wrap: wrap; margin: 0.6em 0;">
+                    <div style="text-align: center;">
+                        <img src="images/pcb_above.png" alt="Vista superior PCB" class="pcb-image" style="max-height: 35vh;">
+                        <p class="image-caption">Vista superior</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <img src="images/pcb_below.png" alt="Vista inferior PCB" class="pcb-image" style="max-height: 35vh;">
+                        <p class="image-caption">Vista inferior</p>
+                    </div>
+                </div>
+                <div style="margin-top: 0.5em; text-align: left; max-width: 850px;">
+                    <p style="font-size: 0.8rem;">
+                        <span class="accent-text">Componentes clave:</span> USB (borde izquierdo) · ESP32-C3 U3 (centro) · Header J3 con OV2640 (centro-derecha) · Buzzer + LED rojo (inferior-izquierda)
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: Cierre -->
+        <div class="slide">
+            <div class="content-center">
+                <h2>Cierre</h2>
+                <div class="reflection-grid">
+                    <div class="reflection-item">
+                        <h4>Mayor desafío técnico</h4>
+                        <p>Diseñar la arquitectura de potencia para dos módulos ESP32 desde una sola fuente USB, con protección contra sobrecorriente, ESD y transitorios. Equilibrar presupuesto de corriente y seleccionar reguladores (TPS2553 para cámara, AP2112K para controlador) exigió compromisos cuidadosos.</p>
+                    </div>
+                    <div class="reflection-item">
+                        <h4>Mejor parte resuelta</h4>
+                        <p>El árbol de potencia. Separar el ESP32-CAM en su propia rama de 5V con límite de corriente, manteniendo el controlador y la lógica en un riel LDO limpio de 3.3V, garantiza estabilidad ante fallos del módulo de visión.</p>
+                    </div>
+                    <div class="reflection-item">
+                        <h4>Próxima versión</h4>
+                        <p>Fabricar y ensamblar la PCB real; validar con el módulo ESP32-CAM y cámara OV2640; implementar visión embebida directamente en el ESP32-CAM; añadir monitoreo remoto por Wi-Fi.</p>
+                    </div>
+                    <div class="reflection-item">
+                        <h4>Aprendizaje principal</h4>
+                        <p>Diseño electrónico no es solo conectar componentes: es anticipar modos de falla. Hacer que el sistema degrade con gracia (operar como alarma básica sin cámara) enseñó a diseñar para confiabilidad, no solo funcionalidad.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: Referencias -->
+        <div class="slide">
+            <div class="content-center">
+                <h2>Referencias</h2>
+                <div style="max-width: 800px; text-align: left;">
+                    <div class="ref-category">
+                        <h4>Hojas de datos de microcontroladores</h4>
+                        <p>ESP32-C3-WROOM-02-N4 Datasheet · ESP32-CAM (AI-Thinker) Documentation · OV2640 Camera Sensor Datasheet</p>
+                    </div>
+                    <div class="ref-category">
+                        <h4>Componentes de potencia</h4>
+                        <p>AP2112K-3.3TRG1 LDO Datasheet · TPS2553DBVR Power Switch Datasheet & App Note · DN2302S MOSFET Datasheet</p>
+                    </div>
+                    <div class="ref-category">
+                        <h4>Protección y componentes pasivos</h4>
+                        <p>SMF5.0CA TVS Diode Datasheet · USBLC6-2P6 ESD Protection Datasheet · HC-SR501 PIR Module Datasheet</p>
+                    </div>
+                    <div class="ref-category">
+                        <h4>Software y librerías</h4>
+                        <p>MediaPipe Face Detection Documentation · OpenCV Python Library · ESP-IDF / Arduino-ESP32 Core Documentation</p>
+                    </div>
+                    <div class="ref-category">
+                        <h4>Diseño PCB</h4>
+                        <p>Altium Designer Documentation · Professional Open-Source PCB Designs · Manufacturer Design Guidelines</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="nav-hint">
+        <button class="nav-btn" onclick="prevSlide()">◀ Anterior</button>
+        <button class="nav-btn" onclick="nextSlide()">Siguiente ▶</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const progressBar = document.getElementById('progressBar');
+        const slideCounter = document.getElementById('slideCounter');
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide);
+            });
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            progressBar.style.width = progress + '%';
+            slideCounter.textContent = (currentSlide + 1) + ' / ' + totalSlides;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) { currentSlide++; updateSlide(); }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) { currentSlide--; updateSlide(); }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+                e.preventDefault(); nextSlide();
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                e.preventDefault(); prevSlide();
+            } else if (e.key === 'Home') {
+                e.preventDefault(); currentSlide = 0; updateSlide();
+            } else if (e.key === 'End') {
+                e.preventDefault(); currentSlide = totalSlides - 1; updateSlide();
+            }
+        });
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+        document.addEventListener('touchstart', function(e) { touchStartX = e.changedTouches[0].screenX; });
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchStartX - touchEndX > 50) nextSlide();
+            else if (touchEndX - touchStartX > 50) prevSlide();
+        });
+
+        updateSlide();
+    </script>
+</body>
+</html>
