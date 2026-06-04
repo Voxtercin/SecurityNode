@@ -1,0 +1,258 @@
+SCRIPT DE PRESENTACIÓN — SecurityNode
+=====================================
+Proyecto Final de Diseño Electrónico
+Jerónimo Vargas Orozco — jevargaso@unal.edu.co
+
+Tiempo estimado total: 15–20 minutos
+
+------------------------------------------------------------------------------
+SLIDE 1 — TÍTULO (30 segundos)
+------------------------------------------------------------------------------
+"Buenos días. Mi nombre es Jerónimo Vargas Orozco y este es mi proyecto final
+de diseño electrónico: SecurityNode.
+
+SecurityNode es un sistema de seguridad embebido que detecta intrusiones físicas
+y verifica amenazas usando visión por computador, funcionando completamente en
+el borde sin depender de la nube ni servicios externos."
+
+[PAUSA BREVE]
+
+------------------------------------------------------------------------------
+SLIDE 2 — DESCRIPCIÓN EN LENGUAJE NATURAL (2 minutos)
+------------------------------------------------------------------------------
+"Voy a explicar el proyecto como si lo presentara a alguien sin conocimientos
+técnicos.
+
+[APUNTAR AL SLIDE]
+
+El problema que resuelvo es simple: las alarmas tradicionales detectan eventos
+pero no saben qué los provocó. Una mascota, el viento o un usuario autorizado
+generan la misma sirena que un intruso real. Eso genera muchas falsas alarmas
+y reduce la confianza en el sistema.
+
+Los usuarios potenciales son propietarios de viviendas y pequeños negocios
+que necesitan seguridad asequible, que respete su privacidad y que no exija
+suscripciones mensuales ni almacenamiento en la nube.
+
+La función principal es: sensores de puerta y movimiento PIR detectan
+intrusiones. Cuando se activan, el sistema captura una imagen y decide:
+¿amenaza real o falsa alarma?
+
+El comportamiento esperado es: si se detecta una condición sospechosa —por
+ejemplo, rostro cubierto o timeout sin reconocimiento— se activan el LED rojo
+y el buzzer. Si no hay amenaza, se registra el evento y el sistema vuelve a
+reposo. Y si el módulo de cámara no está disponible, el sistema sigue operando
+como alarma básica con sensores y actuadores."
+
+------------------------------------------------------------------------------
+SLIDE 3 — DIAGRAMA DE BLOQUES (2 minutos)
+------------------------------------------------------------------------------
+"Este es el diagrama de bloques de SecurityNode.
+
+[SEÑALAR CADA BLOQUE MIENTRAS SE NOMBRA]
+
+La alimentación entra por USB a 5V. Tiene una etapa de protección con diodo
+TVS, ferrita para EMI y protección ESD.
+
+Después, el riel de 5V se divide en dos ramas:
+Una rama alimenta directamente al ESP32-CAM a través del switch TPS2553.
+La otra rama pasa por el regulador LDO AP2112K-3.3 para generar el riel de
+3.3V que alimenta el ESP32-C3, la lógica, los sensores y las salidas.
+
+El ESP32-C3 es el controlador central. Gestiona las entradas GPIO de los
+sensores: el reed switch de puerta y el sensor PIR de movimiento.
+
+Cuando un sensor se activa, el ESP32-C3 solicita una imagen al ESP32-CAM
+a través de UART. El ESP32-CAM tiene su cámara OV2640 integrada.
+
+Las salidas son el buzzer —controlado por un MOSFET— y el LED rojo de alarma.
+
+En resumen: sensores → controlador → decisión con visión → actuadores."
+
+------------------------------------------------------------------------------
+SLIDE 4 — ÁRBOL DE POTENCIA (2 minutos)
+------------------------------------------------------------------------------
+"Aquí presento el árbol de potencia del sistema.
+
+[SEÑALAR EL FLUJO DE ARRIBA HACIA ABAJO]
+
+La entrada es USB 5V a través del conector J2. Antes de distribuir la energía,
+pasa por protección: un diodo TVS SMF5.0CA contra transitorios, una ferrita
+para suprimir ruido de alta frecuencia, y un array de protección ESD USBLC6.
+
+Del riel 5V protegido se derivan dos ramas principales:
+
+Rama 1: TPS2553 — un switch de potencia con límite de corriente ajustable
+entre 0.075 y 1.7 amperios. Este switch alimenta exclusivamente al ESP32-CAM
+a través del conector J3. La razón de usar un switch de potencia es que el
+ESP32-CAM consume picos altos de corriente durante la transmisión WiFi y la
+captura de imagen. Con el TPS2553, podemos controlar y limitar esa alimentación
+independientemente.
+
+Rama 2: AP2112K, un regulador LDO de 600 miliamperios que genera el riel
+de 3.3V. De aquí se alimenta el ESP32-C3, toda la lógica digital, los sensores
+y las interfaces de entrada/salida.
+
+[PAUSA]
+
+¿Por qué separar los rieles? Si el ESP32-CAM causa una caída de voltaje durante
+un pico de corriente, el controlador y los sensores en el riel de 3.3V siguen
+estables. Además, si el módulo de cámara falla o se sobrecarga, el TPS2553
+lo protege sin afectar la operación del sistema principal."
+
+------------------------------------------------------------------------------
+SLIDE 5 — PRUEBA DE CONCEPTO (2 minutos)
+------------------------------------------------------------------------------
+"Esta es la prueba de concepto que desarrollé durante el curso.
+
+[SEÑALAR EL DIAGRAMA]
+
+Usé una protoboard con un ESP-WROOM-32 como controlador, conectado por USB
+a una laptop. En la laptop corrí un script en Python que usa la webcam y
+la librería MediaPipe para detección facial.
+
+El método de jurado funciona así: se capturan tres fotogramas consecutivos.
+MediaPipe analiza la visibilidad del rostro en cada uno. Se hace una votación
+mayoritaria: si en dos de tres fotogramas el rostro está visible, se clasifica
+como DESPEJADO. Si está cubierto o no se detecta rostro, se activa la ALARMA.
+
+[PAUSA]
+
+Con esta prueba de concepto validé la lógica de sensores, la simulación de
+comunicación UART, el algoritmo de decisión y el control del LED indicador.
+
+Las limitaciones fueron: la webcam de laptop no es la cámara OV2640 real, el
+prototipo corre en Python y no en C++ embebido, no se validó sobre PCB real
+y la integración del buzzer aún está pendiente. Pero demostró que la idea
+técnica es viable antes de pasar al diseño del circuito impreso."
+
+------------------------------------------------------------------------------
+SLIDE 6 — DIAGRAMA ESQUEMÁTICO (2.5 minutos)
+------------------------------------------------------------------------------
+"Aquí muestro los bloques funcionales más importantes del esquemático.
+
+[APUNTAR A CADA BLOQUE]
+
+Bloque de Potencia: entrada USB, protección contra transitorios y ESD, ferrita
+para filtrado de ruido, y el regulador LDO AP2112K-3.3 para el riel de lógica.
+
+ESP32-C3: el microcontrolador principal, sus pines GPIO, resistencias de
+arranque para modo programación y el header de programación.
+
+Entradas: el sensor de puerta conectado a un pin GPIO con diodo de protección,
+y el sensor PIR de movimiento con su propia etapa de acondicionamiento.
+
+Salidas: el buzzer controlado por un MOSFET canal-N que amplifica la corriente
+desde el GPIO, y el LED rojo de alarma con su resistencia limitadora.
+
+[SEÑALAR EL ÚLTIMO BLOQUE]
+
+Alimentación ESP32-CAM: el switch de potencia TPS2553DBVR controla la
+alimentación del módulo de cámara. Es una rama de 5V separada de la lógica
+principal, lo que permite controlar y proteger la alimentación del módulo de
+visión de forma independiente.
+
+No es necesario explicar cada conexión, pero sí justificar las decisiones:
+usé LDO para el riel limpio de 3.3V, switch de potencia para la cámara porque
+consume picos altos, MOSFET para el buzzer porque el GPIO no entrega suficiente
+corriente directamente, y diodos de protección en todas las líneas externas."
+
+------------------------------------------------------------------------------
+SLIDE 7 — PCB (2 minutos)
+------------------------------------------------------------------------------
+"Este es el diseño de la PCB de dos capas, realizado en Altium Designer.
+
+[SEÑALAR LA IMAGEN CENTRAL]
+
+Criterios de ubicación de componentes: el conector USB J2 está en el borde
+izquierdo para acceso fácil. El ESP32-C3 U3 está centrado. El header J3 para
+el ESP32-CAM está posicionado con espacio suficiente para el cable plano de
+la cámara. El buzzer LS1 y el LED rojo están en el borde inferior izquierdo
+para visibilidad y audibilidad.
+
+[SEÑALAR LAS TARJETAS INFERIORES]
+
+Separación potencia/señal: los componentes de potencia —TPS2553, AP2112K y
+condensadores de desacople— están agrupados en la zona superior izquierda.
+La lógica digital y el microcontrolador ocupan el centro-derecha. Esto minimiza
+el acoplamiento de ruido entre etapas de potencia y etapas de señal.
+
+Planos de tierra y potencia: la capa inferior tiene un plano de masa continuo
+para integridad de señal y disipación térmica. Hay condensadores de desacoplo
+bulk cerca de cada regulador, y condensadores de 100nF locales en cada pin de
+alimentación de los circuitos integrados.
+
+Fabricación: se aplicaron reglas DRC estándar. Incluye cuatro agujeros de
+montaje mecánico, todos los conectores accesibles desde los bordes, y
+silkscreen completo con referencias de todos los componentes."
+
+------------------------------------------------------------------------------
+SLIDE 8 — RENDER 3D DE LA PCB (1.5 minutos)
+------------------------------------------------------------------------------
+"Estos son los renders 3D de la placa: vista superior e inferior.
+
+[SEÑALAR CADA VISTA]
+
+En la vista superior se aprecia la distribución física: USB en el borde
+izquierdo, ESP32-C3 en el centro, header para el ESP32-CAM con la cámara
+OV2640 hacia el centro-derecha, y buzzer con LED rojo en la esquina inferior
+izquierda.
+
+La vista inferior muestra principalmente el plano de masa y las soldaduras
+de los componentes de montaje superficial.
+
+[PAUSA]
+
+Como concepto de integración mecánica, la PCB cabe en una pequeña caja de ABS
+con una abertura para el USB, un orificio para la lente de la cámara, una
+ventana para el LED y una rejilla para el buzzer. Los cuatro agujeros de
+montaje permiten fijarla a una pared o panel de control."
+
+------------------------------------------------------------------------------
+SLIDE 9 — CIERRE (2 minutos)
+------------------------------------------------------------------------------
+"Para cerrar, quiero reflexionar sobre el proyecto.
+
+[LEER CADA TARJETA BREVEMENTE]
+
+La mayor dificultad técnica fue diseñar la arquitectura de potencia para
+alimentar dos módulos ESP32 desde una sola fuente USB, añadiendo protección
+contra sobrecorriente, ESD y transitorios. Equilibrar el presupuesto de
+corriente y seleccionar los reguladores adecuados exigió muchos compromisos.
+
+La parte mejor resuelta fue el árbol de potencia. Separar el ESP32-CAM en su
+propia rama de 5V con switch de potencia TPS2553, manteniendo el controlador
+y la lógica en un riel LDO limpio de 3.3V, garantiza estabilidad incluso si
+el módulo de visión falla o consume picos inesperados.
+
+En una próxima versión, necesito fabricar y ensamblar la PCB real, validar
+con el módulo ESP32-CAM físico y la cámara OV2640, migrar la visión por
+computador del prototipo Python al ESP32-CAM en C++ embebido, y añadir
+monitoreo remoto por Wi-Fi.
+
+Lo principal que aprendí es que diseño electrónico no es solo conectar
+componentes: es anticipar modos de falla. Hacer que el sistema degrade con
+gracia —operando como alarma básica sin la cámara— me enseñó a diseñar para
+confiabilidad, no solo para funcionalidad."
+
+------------------------------------------------------------------------------
+SLIDE 10 — REFERENCIAS (30 segundos)
+------------------------------------------------------------------------------
+"Finalmente, estas son las referencias técnicas que respaldan las decisiones
+de diseño: las hojas de datos del ESP32-C3, ESP32-CAM y cámara OV2640;
+los componentes de potencia AP2112K, TPS2553 y MOSFET DN2302S; protección
+ESD con SMF5.0CA y USBLC6; la documentación de MediaPipe para detección facial;
+y las guías de diseño de PCB del fabricante."
+
+[PAUSA]
+
+"Muchas gracias. Quedo atento a sus preguntas."
+
+------------------------------------------------------------------------------
+NOTAS PARA EL PRESENTADOR
+------------------------------------------------------------------------------
+- Mantener contacto visual con el profesor y compañeros, no leer de pantalla.
+- Usar las manos para señalar elementos en los diagramas cuando sea posible.
+- Si una pregunta interrumpe, responder con calma y volver al hilo si es necesario.
+- No exceder 20 minutos totales; dejar tiempo para preguntas.
+- Llevar una copia del PDF en USB o email como respaldo.
