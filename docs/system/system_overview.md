@@ -15,6 +15,8 @@ SecurityNode is an embedded security system based on an **ESP32-C3-WROOM-02-N4**
 
 ## Use Cases
 
+> **Design-stage note:** The behavior below describes the *proposed* firmware/FSM. This is a design-stage, not-yet-fabricated project — no firmware exists yet. The flow is the intended design, not as-built behavior.
+
 ### Primary Use Case: Intrusion Detection with Visual Verification
 
 ```
@@ -43,9 +45,9 @@ If the ESP32-CAM module is not available or vision analysis fails, the ESP32-C3 
 ## System Block Diagram
 
 ```
-+------------------+        UART / GPIO         +------------------+
++------------------+   UART1 (IO0=RX/IO1=TX)    +------------------+
 |                  |<------------------------->|                  |
-|   ESP32-C3       |        (via J3)            |   ESP32-CAM      |
+|   ESP32-C3       |  via U5 isolation -> J3    |   ESP32-CAM      |
 |   (Controller)   |                            |   (Vision)       |
 |                  |                            |                  |
 +--------+---------+                            +--------+---------+
@@ -67,7 +69,7 @@ If the ESP32-CAM module is not available or vision analysis fails, the ESP32-C3 
 |Contact| |Motion  |
 +-------+ +--------+
          |
-         | USB / UART
+         | Native USB (IO18/IO19) + 5V power in
     +----v----+
     | Mini USB|
     |   (J2)  |
@@ -81,9 +83,9 @@ If the ESP32-CAM module is not available or vision analysis fails, the ESP32-C3 
 | Main Controller | ESP32-C3-WROOM-02-N4 | Security logic, sensor polling, alarm control, UART master |
 | Vision Module | ESP32-CAM (via J3) | Image capture, face coverage analysis, UART slave |
 | Power Input | Mini USB B (J2) | 5V DC supply |
-| 3.3V Regulator | AP2112K-3.3TRG1 (U2) | LDO for ESP32-C3 and logic rails |
-| Current Limiter | TPS2553DBVR (U4) | Adjustable current-limited power distribution |
-| UART Switch | SN74LVC2G66DCTR (U5) | Analog switch for multiplexed programming/debug UART |
+| 3.3V Regulator | AP2112K-3.3TRG1 (U1) | LDO supplying the 3.3V rail (ESP32-C3 + U5 + logic pull-ups) |
+| ESP32-CAM Power Gate | TPS2553DBVR (U4) | Current-limited power switch that gates the CAM 5V branch (CAM_5V) only; enabled by CAM_EN, OFF by default |
+| CAM-UART Isolation Switch | SN74LVC2G66DCTR (U5) | Analog switch on the C3↔CAM UART1 link; auto-connects/isolates based on CAM presence (control tied to CAM_3V3) |
 | Buzzer Driver | DN2302S (Q1) | N-channel MOSFET for buzzer activation |
 | Alarm LED | LED_0805_RED | Visual alarm indicator |
 | ESD Protection | USBLC6-2P6, SMF5.0CA | Transient voltage suppression on USB and power lines |

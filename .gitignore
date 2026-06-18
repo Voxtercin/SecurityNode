@@ -24,3 +24,6 @@ build/
 Thumbs.db
 *.tmp
 *.bak
+
+# Agent guidance files
+CLAUDE.md

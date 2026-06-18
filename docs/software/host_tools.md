@@ -25,11 +25,25 @@ A simple GUI or CLI tool to read and display event logs from the ESP32-C3:
 
 ### 3. Firmware Update Tool
 
-A helper script to flash both ESP32-C3 and ESP32-CAM firmware:
+A helper script to flash both ESP32-C3 and ESP32-CAM firmware. Note that the two
+modules are flashed over **separate, independent physical paths** — there is no
+host-selectable switch that retargets a single port:
 
-- Automatically toggle the U5 analog switch to target the correct module
-- Enter bootloader mode automatically (assert BOOT/EN pins via serial control lines if available)
-- Wrap `esptool.py` with user-friendly prompts
+- Flash the **ESP32-C3** over its **native USB** (USB-Serial/JTAG on IO18/IO19 via
+  J2) — no on-board USB-UART bridge chip is present, so the PC enumerates the
+  C3's built-in USB CDC directly.
+- Flash the **ESP32-CAM out-of-band** via the **J7 programming header** with an
+  **external USB-UART adapter**, fitting the **J6** CAM-GPIO0 boot jumper to enter
+  the CAM bootloader. No on-board USB path reaches the CAM.
+- Do **not** attempt to toggle U5 to "select" a module: U5 is an automatic,
+  CAM-presence-gated series isolation switch on the C3↔CAM UART1 link (its control
+  pins are hard-tied to the CAM's own 3.3 V output), not a host-controllable
+  programming multiplexer.
+- For the C3's native-USB path the bootloader is entered automatically by the USB
+  stack; for the alternate UART0 path (header J1) or for the CAM, hold BOOT (SW1 /
+  the J6 jumper) and tap EN/reset (SW2) — assert these via the adapter's control
+  lines only if wired.
+- Wrap `esptool.py` with user-friendly prompts.
 
 ### 4. Serial Monitor / Debug Console
 
@@ -97,6 +111,11 @@ If you develop a host-side tool for SecurityNode, please:
 ## Design Notes
 
 - All UART communication should follow the protocol defined in `docs/firmware/cam_protocol.md`.
-- Respect the U5 analog switch state when connecting to either ESP32-C3 or ESP32-CAM.
+- Host tools talk to the ESP32-C3 over its **native USB** (USB-Serial/JTAG via J2), or
+  over the alternate UART0 debug header J1 (GPIO20/21). The ESP32-CAM is reached only
+  out-of-band through the J7 header with an external USB-UART adapter — the host has no
+  on-board path to it.
+- U5 is an **automatic** CAM-presence isolation switch on the C3↔CAM UART1 link, not a
+  host-selectable mux; host tools cannot and need not control or "select" its state.
 - Avoid flooding the ESP32-C3 with commands during alarm events to prevent missed sensor triggers.
 - If implementing remote access over Wi-Fi, ensure proper authentication and encryption to prevent unauthorized control of the security system.

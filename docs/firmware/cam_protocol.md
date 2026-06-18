@@ -1,5 +1,7 @@
 # CAM Protocol — SecurityNode
 
+> **Status: proposed design — no firmware exists yet.** This is a design-stage specification for a not-yet-fabricated board; nothing here is as-built.
+
 ## Overview
 
 This document defines the UART command protocol between the **ESP32-C3** (master) and the **ESP32-CAM** (slave). The protocol enables the ESP32-C3 to request image capture and receive face-coverage analysis results from the ESP32-CAM.
@@ -8,7 +10,7 @@ This document defines the UART command protocol between the **ESP32-C3** (master
 
 | Parameter | Value |
 |-----------|-------|
-| Physical Interface | UART1 (ESP32-C3 GPIO8/9) |
+| Physical Interface | UART1 (ESP32-C3 IO0 = RX, IO1 = TX) |
 | Baud Rate | 115200 |
 | Data Bits | 8 |
 | Parity | None |
@@ -60,26 +62,13 @@ Requests the ESP32-CAM to capture an image and perform face-coverage analysis.
 
 **Frame:**
 ```
-0xAA 0x01 0x01 0x01
+0xAA 0x01 0x01 0x00
 ```
 
 - `0xAA` — Header
-- `0x01` — LENGTH (CMD_ID only)
+- `0x01` — LENGTH (CMD_ID only, no payload)
 - `0x01` — CMD_CAPTURE
-- `0x01` — CHECKSUM (0x01 ^ 0x01 = 0x00... wait, let's recalculate properly)
-
-Correct checksum: `0x01` (LENGTH) ^ `0x01` (CMD_ID) = `0x00`.
-
-Wait, my frame description says checksum covers LENGTH to end of PAYLOAD. Let's be precise:
-
-Checksum = LENGTH ^ CMD_ID ^ PAYLOAD[0] ^ ... ^ PAYLOAD[N-1]
-
-For CMD_CAPTURE:
-- LENGTH = 1 (CMD_ID only, no payload)
-- CMD_ID = 0x01
-- CHECKSUM = 0x01 ^ 0x01 = 0x00
-
-**Frame bytes:** `0xAA 0x01 0x01 0x00`
+- `0x00` — CHECKSUM (`0x01` ^ `0x01` = `0x00`)
 
 ### CMD_STATUS (0x02)
 
@@ -144,12 +133,12 @@ Returns the result of a capture and analysis operation.
 
 **Example (RESULT_SUSPICIOUS):**
 ```
-0xAA 0x02 0x82 0x01 0x80
+0xAA 0x02 0x82 0x01 0x81
 ```
 - LENGTH = 2
 - CMD_ID = 0x82
 - PAYLOAD = 0x01 (SUSPICIOUS)
-- CHECKSUM = 0x02 ^ 0x82 ^ 0x01 = 0x80
+- CHECKSUM = 0x02 ^ 0x82 ^ 0x01 = 0x81
 
 ### RSP_STATUS (0x83)
 

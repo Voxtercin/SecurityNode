@@ -6,25 +6,35 @@
 \contentsline {section}{\numberline {6}External interfaces}{6}{section.6}%
 \contentsline {subsection}{\numberline {6.1}Pinout}{6}{subsection.6.1}%
 \contentsline {subsection}{\numberline {6.2}UART interface parameters}{7}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Vision approach (open design decision)}{8}{subsection.6.3}%
 \contentsline {section}{\numberline {7}Electrical design summary}{8}{section.7}%
-\contentsline {subsection}{\numberline {7.1}Power architecture}{8}{subsection.7.1}%
-\contentsline {subsection}{\numberline {7.2}Analytical power budget}{8}{subsection.7.2}%
-\contentsline {subsection}{\numberline {7.3}Output drive}{8}{subsection.7.3}%
-\contentsline {subsection}{\numberline {7.4}Schematic preview}{8}{subsection.7.4}%
-\contentsline {subsection}{\numberline {7.5}PCB design review notes}{8}{subsection.7.5}%
-\contentsline {section}{\numberline {8}State machine}{9}{section.8}%
-\contentsline {subsection}{\numberline {8.1}State definitions}{9}{subsection.8.1}%
-\contentsline {subsection}{\numberline {8.2}State-transition diagram}{9}{subsection.8.2}%
-\contentsline {subsection}{\numberline {8.3}State behavior table}{10}{subsection.8.3}%
-\contentsline {section}{\numberline {9}UART protocol interface}{10}{section.9}%
-\contentsline {subsection}{\numberline {9.1}Frame format}{11}{subsection.9.1}%
-\contentsline {subsection}{\numberline {9.2}Command set}{11}{subsection.9.2}%
-\contentsline {subsection}{\numberline {9.3}Response handling}{11}{subsection.9.3}%
-\contentsline {subsection}{\numberline {9.4}Timeout and retry rules}{11}{subsection.9.4}%
-\contentsline {section}{\numberline {10}Firmware design sketch}{12}{section.10}%
-\contentsline {section}{\numberline {11}Theoretical verification plan}{12}{section.11}%
-\contentsline {subsection}{\numberline {11.1}Expected behavior and design targets}{12}{subsection.11.1}%
-\contentsline {subsection}{\numberline {11.2}Analytical verification}{12}{subsection.11.2}%
-\contentsline {subsection}{\numberline {11.3}Schematic and PCB verification}{13}{subsection.11.3}%
-\contentsline {subsection}{\numberline {11.4}Excluded verification activities}{13}{subsection.11.4}%
-\contentsline {section}{\numberline {12}Summary}{13}{section.12}%
+\contentsline {subsection}{\numberline {7.1}Key components}{8}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Power architecture}{9}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Camera power gate (U4) and UART isolation switch (U5)}{9}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Analytical power budget}{10}{subsection.7.4}%
+\contentsline {subsection}{\numberline {7.5}Output drive}{10}{subsection.7.5}%
+\contentsline {subsection}{\numberline {7.6}Component value rationale}{10}{subsection.7.6}%
+\contentsline {subsection}{\numberline {7.7}Schematic preview}{11}{subsection.7.7}%
+\contentsline {subsection}{\numberline {7.8}PCB design review notes}{13}{subsection.7.8}%
+\contentsline {section}{\numberline {8}State machine}{13}{section.8}%
+\contentsline {subsection}{\numberline {8.1}State definitions}{14}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}State-transition diagram}{14}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}State behavior table}{16}{subsection.8.3}%
+\contentsline {section}{\numberline {9}UART protocol interface}{16}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Frame format}{16}{subsection.9.1}%
+\contentsline {paragraph}{Worked example.}{16}{section*.2}%
+\contentsline {subsection}{\numberline {9.2}Command set}{16}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}Response handling}{17}{subsection.9.3}%
+\contentsline {subsection}{\numberline {9.4}Timeout and retry rules}{17}{subsection.9.4}%
+\contentsline {paragraph}{Retry loop and the \texttt {disarm} input.}{17}{section*.3}%
+\contentsline {section}{\numberline {10}Firmware design sketch}{17}{section.10}%
+\contentsline {section}{\numberline {11}Additional design considerations}{18}{section.11}%
+\contentsline {subsection}{\numberline {11.1}Mechanical and environmental}{18}{subsection.11.1}%
+\contentsline {subsection}{\numberline {11.2}Security considerations}{18}{subsection.11.2}%
+\contentsline {section}{\numberline {12}Theoretical verification plan}{18}{section.12}%
+\contentsline {subsection}{\numberline {12.1}Expected behavior and design targets}{18}{subsection.12.1}%
+\contentsline {subsection}{\numberline {12.2}Analytical verification}{19}{subsection.12.2}%
+\contentsline {subsection}{\numberline {12.3}Schematic and PCB verification}{19}{subsection.12.3}%
+\contentsline {subsection}{\numberline {12.4}Excluded verification activities}{19}{subsection.12.4}%
+\contentsline {section}{\numberline {13}References}{19}{section.13}%
+\contentsline {section}{\numberline {14}Summary}{20}{section.14}%

@@ -12,29 +12,35 @@ The system is designed around a compact PCB and integrates:
 - **Alarm LED** and **buzzer** (MOSFET-driven) for local indication
 - **USB power input** with **3.3 V regulation**
 
-When a door-opening or motion event is detected, the ESP32-C3 can request the ESP32-CAM to capture and analyze an image. The vision module determines whether the person entering has a visible or covered face (e.g., helmet, mask, or balaclava). If a suspicious condition is detected, the ESP32-C3 activates the buzzer and alarm LED.
+In the planned operating flow (design-stage; firmware not yet written), when a door-opening or motion event is detected, the ESP32-C3 requests the ESP32-CAM to capture and analyze an image. The vision module is intended to determine whether the person entering has a visible or covered face (e.g., helmet, mask, or balaclava). If a suspicious condition is detected, the ESP32-C3 activates the buzzer and alarm LED.
 
 ## Repository Structure
+
+> **Project stage:** this is a **design-stage** project (PCB drawn in Altium but not yet
+> fabricated; no firmware written). The documentation and design assets are the current
+> deliverable. The code/source directories below — `hardware/altium/`, `firmware/esp32c3/`,
+> `firmware/esp32cam/`, `software/host/`, `tests/`, and `tools/` — are currently **skeleton
+> placeholders (each holds only a `.gitkeep`)**; the substance lives in `docs/` and `assets/`.
 
 ```
 SecurityNode/
 ├── assets/              # PCB renders, schematic blocks, and source PDFs
 ├── docs/
 │   ├── hardware/        # Hardware interface and design documentation
-│   ├── firmware/        # Firmware architecture and protocols
+│   ├── firmware/        # Firmware architecture and protocols (proposed design)
 │   ├── presentation/    # Final presentation (HTML + PDF)
-│   ├── software/        # Host-side tools and utilities
+│   ├── software/        # Host-side tools and utilities (proposed design)
 │   ├── system/          # System architecture and requirements
 │   └── teacher_notes/   # Presentation guidelines
 ├── hardware/
-│   └── altium/          # Altium Designer project files
+│   └── altium/          # Altium Designer project files (skeleton — not yet committed)
 ├── firmware/
-│   ├── esp32c3/         # Main controller firmware
-│   └── esp32cam/        # Vision module firmware
+│   ├── esp32c3/         # Main controller firmware (skeleton — not yet written)
+│   └── esp32cam/        # Vision module firmware (skeleton — not yet written)
 ├── software/
-│   └── host/            # PC-side configuration and monitoring tools
-├── tests/               # Validation procedures and bring-up checklists
-└── tools/               # Helper scripts, export helpers, and generators
+│   └── host/            # PC-side configuration and monitoring tools (skeleton)
+├── tests/               # Validation procedures and bring-up checklists (skeleton)
+└── tools/               # Helper scripts, export helpers, and generators (skeleton)
 ```
 
 ## Modular Architecture

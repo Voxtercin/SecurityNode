@@ -23,40 +23,62 @@
 \newlabel{tab:pinout}{{4}{7}{Application Node pin assignment}{table.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.2}UART interface parameters}{7}{subsection.6.2}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces UART parameters for the ESP32-CAM link.}}{7}{table.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Vision approach (open design decision)}{8}{subsection.6.3}\protected@file@percent }
+\newlabel{sec:vision}{{6.3}{8}{Vision approach (open design decision)}{subsection.6.3}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {7}Electrical design summary}{8}{section.7}\protected@file@percent }
 \newlabel{sec:electrical}{{7}{8}{Electrical design summary}{section.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Power architecture}{8}{subsection.7.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Analytical power budget}{8}{subsection.7.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Estimated application-node power budget.}}{8}{table.6}\protected@file@percent }
-\newlabel{tab:power}{{6}{8}{Estimated application-node power budget}{table.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Output drive}{8}{subsection.7.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Schematic preview}{8}{subsection.7.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.5}PCB design review notes}{8}{subsection.7.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {8}State machine}{9}{section.8}\protected@file@percent }
-\newlabel{sec:statemachine}{{8}{9}{State machine}{section.8}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}State definitions}{9}{subsection.8.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}State-transition diagram}{9}{subsection.8.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Application Node finite-state machine with camera-availability flag and INCONCLUSIVE state.}}{10}{figure.2}\protected@file@percent }
-\newlabel{fig:appnode-fsm}{{2}{10}{Application Node finite-state machine with camera-availability flag and INCONCLUSIVE state}{figure.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}State behavior table}{10}{subsection.8.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Application Node state behavior.}}{10}{table.7}\protected@file@percent }
-\newlabel{tab:states}{{7}{10}{Application Node state behavior}{table.7}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {9}UART protocol interface}{10}{section.9}\protected@file@percent }
-\newlabel{sec:uart}{{9}{10}{UART protocol interface}{section.9}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}Frame format}{11}{subsection.9.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}Command set}{11}{subsection.9.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Application Node command set to the ESP32-CAM.}}{11}{table.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.3}Response handling}{11}{subsection.9.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Application Node response handling.}}{11}{table.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.4}Timeout and retry rules}{11}{subsection.9.4}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces UART timeout and retry policy.}}{11}{table.10}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {10}Firmware design sketch}{12}{section.10}\protected@file@percent }
-\newlabel{sec:sketch}{{10}{12}{Firmware design sketch}{section.10}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {11}Theoretical verification plan}{12}{section.11}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {11.1}Expected behavior and design targets}{12}{subsection.11.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Design targets for key behaviors.}}{12}{table.11}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {11.2}Analytical verification}{12}{subsection.11.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {11.3}Schematic and PCB verification}{13}{subsection.11.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {11.4}Excluded verification activities}{13}{subsection.11.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {12}Summary}{13}{section.12}\protected@file@percent }
-\gdef \@abspage@last{13}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Key components}{8}{subsection.7.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Key components (designator $\rightarrow $ part $\rightarrow $ role).}}{9}{table.6}\protected@file@percent }
+\newlabel{tab:bom}{{6}{9}{Key components (designator $\rightarrow $ part $\rightarrow $ role)}{table.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Power architecture}{9}{subsection.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Camera power gate (U4) and UART isolation switch (U5)}{9}{subsection.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Analytical power budget}{10}{subsection.7.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Estimated application-node power budget.}}{10}{table.7}\protected@file@percent }
+\newlabel{tab:power}{{7}{10}{Estimated application-node power budget}{table.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.5}Output drive}{10}{subsection.7.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.6}Component value rationale}{10}{subsection.7.6}\protected@file@percent }
+\newlabel{sec:values}{{7.6}{10}{Component value rationale}{subsection.7.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.7}Schematic preview}{11}{subsection.7.7}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Power input, protection, and regulation: USB $\rightarrow $ F1 (PTC) $\rightarrow $ D1 (TVS) $\rightarrow $ FB1 $\rightarrow $ 5\,V rail $\rightarrow $ U1 (AP2112K) 3.3\,V LDO, with U4 (TPS2553) gating \texttt  {CAM\_5V}.}}{11}{figure.2}\protected@file@percent }
+\newlabel{fig:blk-power}{{2}{11}{Power input, protection, and regulation: USB $\rightarrow $ F1 (PTC) $\rightarrow $ D1 (TVS) $\rightarrow $ FB1 $\rightarrow $ 5\,V rail $\rightarrow $ U1 (AP2112K) 3.3\,V LDO, with U4 (TPS2553) gating \texttt {CAM\_5V}}{figure.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces ESP32-C3 controller block (left) and ESP32-CAM interface block, including the U5 UART-isolation switch (right).}}{12}{figure.3}\protected@file@percent }
+\newlabel{fig:blk-mcu}{{3}{12}{ESP32-C3 controller block (left) and ESP32-CAM interface block, including the U5 UART-isolation switch (right)}{figure.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Sensor input conditioning (door / PIR, left) and alarm output drivers (LED and MOSFET-driven buzzer, right).}}{12}{figure.4}\protected@file@percent }
+\newlabel{fig:blk-io}{{4}{12}{Sensor input conditioning (door / PIR, left) and alarm output drivers (LED and MOSFET-driven buzzer, right)}{figure.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.8}PCB design review notes}{13}{subsection.7.8}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces PCB layout preview (2-D top view). 3-D top/bottom renders are available under \texttt  {assets/}.}}{13}{figure.5}\protected@file@percent }
+\newlabel{fig:pcb}{{5}{13}{PCB layout preview (2-D top view). 3-D top/bottom renders are available under \texttt {assets/}}{figure.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}State machine}{13}{section.8}\protected@file@percent }
+\newlabel{sec:statemachine}{{8}{13}{State machine}{section.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}State definitions}{14}{subsection.8.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}State-transition diagram}{14}{subsection.8.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Application Node finite-state machine with camera-availability flag and INCONCLUSIVE state.}}{15}{figure.6}\protected@file@percent }
+\newlabel{fig:appnode-fsm}{{6}{15}{Application Node finite-state machine with camera-availability flag and INCONCLUSIVE state}{figure.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}State behavior table}{16}{subsection.8.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Application Node state behavior.}}{16}{table.8}\protected@file@percent }
+\newlabel{tab:states}{{8}{16}{Application Node state behavior}{table.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}UART protocol interface}{16}{section.9}\protected@file@percent }
+\newlabel{sec:uart}{{9}{16}{UART protocol interface}{section.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}Frame format}{16}{subsection.9.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Worked example.}{16}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}Command set}{16}{subsection.9.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Application Node command set to the ESP32-CAM.}}{16}{table.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.3}Response handling}{17}{subsection.9.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Application Node response handling.}}{17}{table.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.4}Timeout and retry rules}{17}{subsection.9.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces UART timeout and retry policy.}}{17}{table.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Retry loop and the \texttt  {disarm} input.}{17}{section*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10}Firmware design sketch}{17}{section.10}\protected@file@percent }
+\newlabel{sec:sketch}{{10}{17}{Firmware design sketch}{section.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {11}Additional design considerations}{18}{section.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.1}Mechanical and environmental}{18}{subsection.11.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.2}Security considerations}{18}{subsection.11.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {12}Theoretical verification plan}{18}{section.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {12.1}Expected behavior and design targets}{18}{subsection.12.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces Design targets for key behaviors.}}{18}{table.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {12.2}Analytical verification}{19}{subsection.12.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {12.3}Schematic and PCB verification}{19}{subsection.12.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {12.4}Excluded verification activities}{19}{subsection.12.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {13}References}{19}{section.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {14}Summary}{20}{section.14}\protected@file@percent }
+\gdef \@abspage@last{20}
