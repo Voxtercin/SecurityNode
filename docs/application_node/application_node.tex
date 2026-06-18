@@ -1,0 +1,667 @@
+\documentclass[11pt,a4paper]{article}
+
+% -----------------------------------------------------------------------------
+% Packages
+% -----------------------------------------------------------------------------
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes, fit, calc, automata}
+
+% Allow slightly looser line breaking to avoid overfull boxes in tables/lists.
+\emergencystretch=1em
+
+% -----------------------------------------------------------------------------
+% Colors and styles
+% -----------------------------------------------------------------------------
+\definecolor{nodeblue}{RGB}{63, 114, 175}
+\definecolor{nodegreen}{RGB}{46, 139, 87}
+\definecolor{nodered}{RGB}{192, 57, 43}
+\definecolor{nodegray}{RGB}{120, 120, 120}
+\definecolor{backgray}{RGB}{245, 245, 245}
+
+\tikzset{
+    appnode/.style={
+        rectangle,
+        rounded corners=4pt,
+        draw=nodeblue,
+        fill=nodeblue!10,
+        line width=1.2pt,
+        minimum width=4.2cm,
+        minimum height=2.2cm,
+        align=center,
+        font=\sffamily\small
+    },
+    io/.style={
+        rectangle,
+        rounded corners=3pt,
+        draw=#1,
+        fill=#1!8,
+        line width=1pt,
+        minimum width=2.8cm,
+        minimum height=1cm,
+        align=center,
+        font=\sffamily\small
+    },
+    bus/.style={
+        ->,
+        >=Stealth,
+        line width=1pt
+    },
+    databus/.style={
+        <->,
+        >=Stealth,
+        line width=1pt,
+        dashed
+    }
+}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{backgray},
+    frame=single,
+    framerule=0pt,
+    breaklines=true,
+    columns=flexible,
+    keepspaces=true
+}
+
+% -----------------------------------------------------------------------------
+% Metadata
+% -----------------------------------------------------------------------------
+\title{
+    \textbf{SecurityNode}\\[0.4em]
+    \Large Application Note\\
+    Controller / Application Node Design
+}
+\author{Final Project of Electronic Design}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This application note documents the \textbf{design} of the SecurityNode
+controller/application node.  The node is implemented on the
+ESP32-C3-WROOM-02-N4 and is responsible for sensor monitoring, alarm control,
+vision-module coordination, and host communication.  Because the project is
+still at the design stage and no assembled hardware is available, this note
+focuses on architectural choices, electrical interfaces, requirements and
+traceability, a formal state machine, the UART protocol, and a theoretical
+verification plan.  Measured bench data such as oscilloscope waveforms, thermal
+tests, and power-consumption plots are intentionally excluded.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+% -----------------------------------------------------------------------------
+\section{Purpose and scope}
+% -----------------------------------------------------------------------------
+
+This application note has three objectives:
+
+\begin{enumerate}
+    \item Capture the design intent of the SecurityNode application/controller node.
+    \item Provide enough detail for a peer review of the firmware architecture,
+        electrical interfaces, and communication protocol before hardware is built.
+    \item Define the verification activities that can be performed analytically
+        or by inspection, given that no physical prototype exists yet.
+\end{enumerate}
+
+The note covers:
+
+\begin{itemize}
+    \item Design assumptions and constraints.
+    \item Design artifacts produced by the project.
+    \item Functional requirements and a traceability matrix.
+    \item External interfaces and a formal pinout.
+    \item Electrical design summary and review notes.
+    \item Finite-state machine with a camera-availability flag.
+    \item UART protocol interface between the ESP32-C3 and the ESP32-CAM.
+    \item Firmware design sketch.
+    \item Theoretical verification plan.
+\end{itemize}
+
+The following topics are \textbf{out of scope} until hardware is fabricated:
+measured waveforms, oscilloscope captures, thermal performance, real power
+consumption, and PCB bring-up results.
+
+% -----------------------------------------------------------------------------
+\section{Design assumptions}
+% -----------------------------------------------------------------------------
+
+The design described in this note relies on the assumptions listed in
+Table~\ref{tab:assumptions}.
+
+\begin{table}[H]
+    \centering
+    \caption{Design assumptions.}
+    \label{tab:assumptions}
+    \begin{tabular}{@{}clp{8cm}@{}}
+        \toprule
+        \textbf{ID} & \textbf{Area} & \textbf{Assumption} \\
+        \midrule
+        A1 & Controller & The application node runs on an ESP32-C3-WROOM-02-N4. \\
+        A2 & Vision & The ESP32-CAM is connected through UART1 (GPIO8/9) at 115200~baud. \\
+        A3 & Sensors & The door contact and PIR outputs are 3.3~V logic signals; polarity is configurable in firmware. \\
+        A4 & Power & The board is powered from a 5~V USB source; a 3.3~V LDO supplies the logic rails. \\
+        A5 & Outputs & The buzzer is driven by a low-side N-channel MOSFET (DN2302S); the LED has a series current-limiting resistor. \\
+        A6 & Host & A USB-UART channel is available for programming, debug logs, and configuration. \\
+        A7 & Algorithm & The ESP32-CAM returns one of the result codes defined in the CAM protocol; the C3 does not run vision inference. \\
+        A8 & Backup & No battery backup is provided; the system operates from USB power only. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\section{Design artifacts}
+% -----------------------------------------------------------------------------
+
+The following artifacts are part of the SecurityNode design baseline and are
+referenced throughout this note:
+
+\begin{itemize}
+    \item \texttt{docs/system/system\_overview.md} --- System description and block diagram.
+    \item \texttt{docs/firmware/firmware\_architecture.md} --- Firmware structure and build options.
+    \item \texttt{docs/firmware/cam\_protocol.md} --- Binary UART protocol specification.
+    \item \texttt{docs/hardware/} --- Hardware interface notes and design rationale.
+    \item \texttt{hardware/altium/} --- Schematic and PCB source files.
+    \item \texttt{assets/Schematic Blocks/} --- Schematic-block previews.
+    \item \texttt{assets/pcb.pdf} --- PCB fabrication preview.
+    \item This document --- Application Note for the controller node.
+\end{itemize}
+
+% -----------------------------------------------------------------------------
+\section{Requirements}
+% -----------------------------------------------------------------------------
+
+\begin{table}[H]
+    \centering
+    \caption{Controller/Application Node functional requirements.}
+    \label{tab:requirements}
+    \begin{tabular}{>{\raggedright\arraybackslash}p{0.7cm} >{\raggedright\arraybackslash}p{3.6cm} >{\raggedright\arraybackslash}p{4.5cm} c >{\raggedright\arraybackslash}p{2.6cm}}
+        \toprule
+        \textbf{ID} & \textbf{Requirement} & \textbf{Rationale} & \textbf{Priority} & \textbf{Verification} \\
+        \midrule
+        R1 & Monitor door contact continuously. & Detect unauthorized entry. & High & Inspection / Analysis \\
+        R2 & Monitor PIR motion continuously. & Detect movement inside the protected area. & High & Inspection / Analysis \\
+        R3 & Request visual verification from the ESP32-CAM on a sensor event. & Reduce false alarms by checking face coverage. & High & Protocol review \\
+        R4 & Activate the local alarm when a suspicious condition is detected. & Deter intruders and alert occupants. & High & State-machine review \\
+        R5 & Operate as a basic alarm when the vision module is unavailable. & Maintain security even if the CAM fails. & High & State-machine review \\
+        R6 & Provide a debug/configuration channel over USB UART. & Allow setup, diagnostics, and logging. & Medium & Interface test \\
+        R7 & Recover from transient UART errors through retry and timeout. & Improve communication robustness. & Medium & Protocol review \\
+        R8 & Operate from a 5~V USB supply within standard current limits. & Simplify deployment and avoid overload. & Medium & Power budget analysis \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\section{Traceability matrix}
+% -----------------------------------------------------------------------------
+
+Table~\ref{tab:traceability} maps each requirement to the sections of this note
+that address it and the planned verification method.
+
+\begin{table}[H]
+    \centering
+    \caption{Requirements traceability matrix.}
+    \label{tab:traceability}
+    \begin{tabular}{>{\raggedright\arraybackslash}p{1.0cm} >{\raggedright\arraybackslash}p{4.4cm} >{\raggedright\arraybackslash}p{5.4cm}}
+        \toprule
+        \textbf{Req.} & \textbf{Addressed in} & \textbf{Verification activity} \\
+        \midrule
+        R1 & \S\ref{sec:pinout}, \S\ref{sec:statemachine}, \S\ref{sec:sketch} & GPIO input review; state coverage analysis. \\
+        R2 & \S\ref{sec:pinout}, \S\ref{sec:statemachine}, \S\ref{sec:sketch} & GPIO input review; state coverage analysis. \\
+        R3 & \S\ref{sec:uart}, \S\ref{sec:statemachine} & Protocol inspection; state-transition review. \\
+        R4 & \S\ref{sec:statemachine}, \S\ref{sec:electrical} & Alarm-path review; output-drive analysis. \\
+        R5 & \S\ref{sec:statemachine} (cam\_available flag) & State-machine review; CAM-failure scenario. \\
+        R6 & \S\ref{sec:pinout}, \S\ref{sec:uart} & USB-UART interface review. \\
+        R7 & \S\ref{sec:uart} (timeout/retry rules) & Protocol robustness analysis. \\
+        R8 & \S\ref{sec:electrical} & Analytical power budget. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\section{External interfaces}
+% -----------------------------------------------------------------------------
+\label{sec:interfaces}
+
+Figure~\ref{fig:appnode-block} shows the controller node and its surrounding
+interfaces.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.4cm and 2.0cm,
+        >=Stealth
+    ]
+        \node[appnode] (app) {\textbf{Application Node}\\ESP32-C3\\Controller design};
+
+        \node[io=nodegreen, left=2.6cm of app, yshift=1.0cm] (door) {Door contact\\GPIO4};
+        \node[io=nodegreen, left=2.6cm of app, yshift=-1.0cm] (pir) {PIR motion\\GPIO5};
+
+        \node[io=nodered, right=2.6cm of app, yshift=1.0cm] (led) {Alarm LED\\GPIO6};
+        \node[io=nodered, right=2.6cm of app, yshift=-1.0cm] (buzz) {Buzzer\\GPIO7};
+
+        \node[io=nodeblue, above=1.6cm of app] (cam) {ESP32-CAM\\UART1 GPIO8/9};
+
+        \node[io=nodegray, below=1.6cm of app] (host) {Host / Debug\\USB UART0};
+
+        \draw[bus, nodegreen] (door.east) -- ++(0.6,0) |- node[above, pos=0.75, font=\scriptsize\sffamily]{event} (app.west);
+        \draw[bus, nodegreen] (pir.east)  -- ++(0.6,0) |- node[below, pos=0.75, font=\scriptsize\sffamily]{event} (app.west);
+
+        \draw[bus, nodered] (app.east) -- ++(0.6,0) |- node[above, pos=0.75, font=\scriptsize\sffamily]{drive} (led.west);
+        \draw[bus, nodered] (app.east) -- ++(0.6,0) |- node[below, pos=0.75, font=\scriptsize\sffamily]{drive} (buzz.west);
+
+        \draw[databus, nodeblue] (app.north) -- node[right, font=\scriptsize\sffamily]{115200 baud} (cam.south);
+
+        \draw[databus, nodegray] (app.south) -- node[right, font=\scriptsize\sffamily]{config / logs} (host.north);
+    \end{tikzpicture}
+    \caption{Application Node block diagram and external interfaces.}
+    \label{fig:appnode-block}
+\end{figure}
+
+% -----------------------------------------------------------------------------
+\subsection{Pinout}
+\label{sec:pinout}
+% -----------------------------------------------------------------------------
+
+Table~\ref{tab:pinout} lists the controller pins used by the application node.
+
+\begin{table}[H]
+    \centering
+    \caption{Application Node pin assignment.}
+    \label{tab:pinout}
+    \begin{tabular}{>{\raggedright\arraybackslash}p{2.7cm} c c >{\raggedright\arraybackslash}p{2.2cm} >{\raggedright\arraybackslash}p{5.2cm}}
+        \toprule
+        \textbf{Signal} & \textbf{GPIO} & \textbf{Dir.} & \textbf{Function} & \textbf{Electrical notes} \\
+        \midrule
+        DOOR\_IN & GPIO4 & Input & Door contact state & 3.3~V logic; internal or external pull; debounced in firmware. \\
+        PIR\_IN & GPIO5 & Input & PIR motion detect & 3.3~V active-high pulse; edge or polled. \\
+        ALARM\_LED & GPIO6 & Output & Alarm LED drive & Active-high or active-low per schematic; series resistor limits current. \\
+        BUZZER\_DRV & GPIO7 & Output & Buzzer MOSFET gate & Drives DN2302S low-side switch; 5~V buzzer load. \\
+        CAM\_TX & GPIO8 & Output & UART1 TX to ESP32-CAM & 3.3~V, 115200~baud, no flow control. \\
+        CAM\_RX & GPIO9 & Input & UART1 RX from ESP32-CAM & 3.3~V, 115200~baud, no flow control. \\
+        USB\_TX & GPIO1 & Output & UART0 TX (debug/flash) & Routed through U5 analog switch. \\
+        USB\_RX & GPIO2 & Input & UART0 RX (debug/flash) & Routed through U5 analog switch. \\
+        3V3 & --- & Power & Logic supply rail & AP2112K-3.3 LDO output. \\
+        VBUS & --- & Power & 5~V USB input & Current-limited by TPS2553. \\
+        GND & --- & Power & Common ground & Single-point/star grounding per PCB review. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\subsection{UART interface parameters}
+% -----------------------------------------------------------------------------
+
+\begin{table}[H]
+    \centering
+    \caption{UART parameters for the ESP32-CAM link.}
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{Parameter} & \textbf{Value} \\
+        \midrule
+        Controller port & UART1 (GPIO8/9) \\
+        Baud rate & 115200 \\
+        Data bits & 8 \\
+        Parity & None \\
+        Stop bits & 1 \\
+        Flow control & None \\
+        Frame format & Binary header/length/ID/payload/checksum \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\section{Electrical design summary}
+\label{sec:electrical}
+% -----------------------------------------------------------------------------
+
+\subsection{Power architecture}
+
+The board receives 5~V from a Mini-USB connector.  A TPS2553 current-limited
+switch distributes power, and an AP2112K-3.3 LDO generates the 3.3~V logic rail
+for the ESP32-C3, ESP32-CAM, sensors, and indicator outputs.  ESD protection is
+provided by USBLC6-2P6 and SMF5.0CA devices.
+
+\subsection{Analytical power budget}
+
+Because no hardware has been built, the budget in Table~\ref{tab:power} is an
+analytical estimate used to confirm that the USB 5~V/500~mA source is adequate.
+
+\begin{table}[H]
+    \centering
+    \caption{Estimated application-node power budget.}
+    \label{tab:power}
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        \textbf{Load} & \textbf{Voltage (V)} & \textbf{Current (mA)} & \textbf{Power (mW)} \\
+        \midrule
+        ESP32-C3 active & 3.3 & 80 & 264 \\
+        ESP32-CAM peak (Wi-Fi + camera on) & 3.3 & 200 & 660 \\
+        Alarm LED & 3.3 & 10 & 33 \\
+        Buzzer (5~V through MOSFET) & 5.0 & 40 & 200 \\
+        Door contact / PIR leakage & 3.3 & 2 & 7 \\
+        \midrule
+        \textbf{Total} & --- & \textbf{332} & \textbf{1164} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The estimated 332~mA is comfortably below the 500~mA nominal USB limit and the
+typical TPS2553 current-limit setting, leaving margin for regulator losses and
+inrush current.
+
+\subsection{Output drive}
+
+The buzzer is switched by a DN2302S N-channel MOSFET.  The ESP32-C3 GPIO drives
+the MOSFET gate directly; the gate threshold and on-resistance must be checked
+against the buzzer current in the final schematic review.  The alarm LED is
+driven through a series resistor sized for the desired LED current and forward
+voltage.
+
+\subsection{Schematic preview}
+
+The schematic is organized into the functional blocks shown in
+\texttt{assets/Schematic Blocks/}: power, ESP32-C3, ESP32-CAM, inputs, outputs,
+and UART switch.  A system-level preview of these blocks is provided in the
+project system overview document.
+
+\subsection{PCB design review notes}
+
+Before fabrication, the PCB layout should be reviewed against the following
+checklist:
+
+\begin{itemize}
+    \item Keep the UART1 traces between the ESP32-C3 and ESP32-CAM short and matched.
+    \item Place decoupling capacitors close to each IC power pin.
+    \item Provide a solid ground plane under the microcontroller and camera module.
+    \item Route the buzzer load away from sensitive sensor traces to reduce switching noise.
+    \item Confirm that the USB data and power lines have the required ESD protection and series resistors.
+    \item Verify the U5 analog-switch routing for programming path selection.
+\end{itemize}
+
+% -----------------------------------------------------------------------------
+\section{State machine}
+\label{sec:statemachine}
+% -----------------------------------------------------------------------------
+
+The application behavior is modelled as a finite-state machine.  A new state,
+\textbf{INCONCLUSIVE}, replaces the previous ``CLEAR'' state to avoid the
+incorrect safety implication that a visible face guarantees no threat.  The
+\textbf{ARMED} state now maintains a \texttt{cam\_available} flag that is
+updated by periodic status queries; this flag determines whether the system can
+enter the vision-verification path or must fall back to basic-alarm behavior.
+
+\subsection{State definitions}
+
+\begin{itemize}
+    \item \textbf{INIT} --- System startup, self-test, GPIO/UART initialization, and initial CAM presence check.
+    \item \textbf{ARMED} --- Normal monitoring mode.  LED slow-blinks, sensors are active, and the node periodically queries the CAM status to set \texttt{cam\_available}.
+    \item \textbf{TRIGGERED} --- A sensor event has been detected.  The LED fast-blinks.  If \texttt{cam\_available} is true, the node proceeds to visual verification; otherwise it enters the ALARM state as a basic alarm.
+    \item \textbf{VISION\_REQUEST} --- The node sends CMD\_CAPTURE to the ESP32-CAM and waits for an ACK.
+    \item \textbf{VISION\_CHECK} --- The node waits for the analysis result while maintaining the fast-blink indication.  A 5~s timeout is enforced.
+    \item \textbf{INCONCLUSIVE} --- The CAM reports a visible face, no face, or another non-threat condition.  The event is logged and the node returns to ARMED without sounding the alarm.
+    \item \textbf{ALARM} --- A suspicious condition, communication failure, or CAM-unavailable condition has occurred.  The LED is solid and the buzzer is ON until the node is disarmed or the alarm timeout expires.
+\end{itemize}
+
+\subsection{State-transition diagram}
+
+Figure~\ref{fig:appnode-fsm} shows the updated state machine.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        every state/.style={
+            draw=nodeblue,
+            fill=nodeblue!10,
+            thick,
+            minimum size=2.0cm,
+            text width=1.95cm,
+            align=center,
+            font=\sffamily\small
+        },
+        >=Stealth,
+        lbl/.style={font=\scriptsize\sffamily, fill=white, inner sep=1.5pt}
+    ]
+        \node[state, initial] (init) at (0,2) {INIT};
+        \node[state] (armed) at (3.2,2) {ARMED};
+        \node[state] (trig) at (3.2,0) {TRIGGERED};
+        \node[state] (vreq) at (6.6,0) {VISION\\REQUEST};
+        \node[state] (vchk) at (10.0,0) {VISION\\CHECK};
+        \node[state] (inc) at (4.0,-3.5) {INCON\\CLUSIVE};
+        \node[state] (alarm) at (10.0,-3.5) {ALARM};
+
+        \path[->]
+            (init)    edge node[lbl, above] {self-test OK} (armed)
+            (armed)   edge node[lbl, right] {sensor event} (trig)
+            (armed)   edge[loop above, dashed, looseness=7]
+                       node[lbl, above] {periodic CMD\_STATUS} (armed)
+            (trig)    edge node[lbl, above] {cam\_available} (vreq)
+            (trig)    edge[out=-55, in=160] node[lbl, below] {cam\_unavailable} (alarm)
+            (vreq)    edge node[lbl, above] {ACK} (vchk)
+            (vreq)    edge[out=-45, in=125] node[lbl, below right] {timeout} (alarm)
+            (vchk)    edge[out=-120, in=60] node[lbl, above left] {clear / no face} (inc)
+            (vchk)    edge node[lbl, right] {suspicious / timeout} (alarm)
+            (inc)     edge[out=150, in=-90] node[lbl, left] {disarm / timeout} (armed)
+            (alarm)   edge[out=90, in=0] node[lbl, right] {disarm / timeout} (armed);
+    \end{tikzpicture}
+    \caption{Application Node finite-state machine with camera-availability flag and INCONCLUSIVE state.}
+    \label{fig:appnode-fsm}
+\end{figure}
+
+\subsection{State behavior table}
+
+\begin{table}[H]
+    \centering
+    \caption{Application Node state behavior.}
+    \label{tab:states}
+    \begin{tabular}{@{}l >{\raggedright\arraybackslash}p{9cm}@{}}
+        \toprule
+        \textbf{State} & \textbf{Behavior} \\
+        \midrule
+        INIT & Power-on self-test, initialize GPIO/UART, test LED/buzzer, check CAM presence. \\
+        ARMED & LED slow blink; sensors active; periodic CAM status query updates \texttt{cam\_available}. \\
+        TRIGGERED & Sensor event detected; LED fast blink; branch based on \texttt{cam\_available}. \\
+        VISION\_REQUEST & Send CMD\_CAPTURE; wait for ACK with 500~ms timeout and retry logic. \\
+        VISION\_CHECK & Maintain fast blink; wait for RSP\_RESULT; enforce 5~s timeout. \\
+        INCONCLUSIVE & Non-threat result (visible face / no face); log event; return to ARMED. \\
+        ALARM & LED solid, buzzer ON; log event; wait for disarm or timeout. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\section{UART protocol interface}
+\label{sec:uart}
+% -----------------------------------------------------------------------------
+
+The application node is the UART master for the ESP32-CAM module.  Commands and
+responses use the binary frame defined in \texttt{docs/firmware/cam\_protocol.md}.
+
+\subsection{Frame format}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.9, every node/.style={font=\sffamily\footnotesize}]
+    \foreach \x/\w/\txt in {0/2.2/HEADER, 2.2/1.4/LENGTH, 3.6/1.4/CMD\_ID, 5.0/3.6/PAYLOAD, 8.6/2.0/CHECKSUM} {
+        \draw (\x,0) rectangle (\x+\w,1) node[midway]{\txt};
+    }
+    \node[below] at (1.1,0) {\scriptsize 0xAA};
+    \node[below] at (2.9,0) {\scriptsize N};
+    \node[below] at (4.3,0) {\scriptsize 1 B};
+    \node[below] at (6.8,0) {\scriptsize N bytes};
+    \node[below] at (9.6,0) {\scriptsize XOR};
+\end{tikzpicture}
+\end{center}
+
+The checksum is the XOR of all bytes from LENGTH through the end of the payload.
+
+\subsection{Command set}
+
+\begin{table}[H]
+    \centering
+    \caption{Application Node command set to the ESP32-CAM.}
+    \begin{tabular}{@{}c l >{\raggedright\arraybackslash}p{6.5cm}@{}}
+        \toprule
+        \textbf{ID} & \textbf{Name} & \textbf{Purpose} \\
+        \midrule
+        \texttt{0x01} & CMD\_CAPTURE & Request image capture and face-coverage analysis. \\
+        \texttt{0x02} & CMD\_STATUS  & Request current module status (updates \texttt{cam\_available}). \\
+        \texttt{0x03} & CMD\_RESET   & Request a soft reset of the vision module. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Response handling}
+
+\begin{table}[H]
+    \centering
+    \caption{Application Node response handling.}
+    \begin{tabular}{@{}c l >{\raggedright\arraybackslash}p{6cm}@{}}
+        \toprule
+        \textbf{ID} & \textbf{Name} & \textbf{Action} \\
+        \midrule
+        \texttt{0x81} & RSP\_ACK     & Validate echoed command; stop retry timer. \\
+        \texttt{0x82} & RSP\_RESULT   & Evaluate result code and drive state transitions. \\
+        \texttt{0x83} & RSP\_STATUS   & Update the \texttt{cam\_available} health flag. \\
+        \texttt{0x84} & RSP\_ERROR    & Log error; retry command or fall back to basic alarm. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Timeout and retry rules}
+
+\begin{table}[H]
+    \centering
+    \caption{UART timeout and retry policy.}
+    \begin{tabular}{@{}l c l >{\raggedright\arraybackslash}p{4.5cm}@{}}
+        \toprule
+        \textbf{Operation} & \textbf{Timeout} & \textbf{Retries} & \textbf{Action on failure} \\
+        \midrule
+        ACK after command & 500~ms & 3 & Mark CAM unresponsive; \texttt{cam\_available=false}; basic alarm. \\
+        RESULT after capture & 5~s & --- & Treat as suspicious; activate ALARM. \\
+        STATUS response & 500~ms & 2 & \texttt{cam\_available=false} until next successful query. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\section{Firmware design sketch}
+\label{sec:sketch}
+% -----------------------------------------------------------------------------
+
+The listing below is a design skeleton for the main loop.  It emphasizes state
+updates and camera-availability handling rather than production code details.
+
+\begin{lstlisting}[language=C]
+void loop() {
+    sensors_read(&door_state, &pir_state);
+
+    /* Update camera health flag periodically while armed. */
+    if (fsm_state == ARMED && status_query_due()) {
+        cam_send_command(CMD_STATUS, NULL, 0);
+    }
+
+    fsm_update(door_state, pir_state, cam_result, cam_available);
+
+    if (fsm_state == VISION_REQUEST && !cam_request_pending) {
+        cam_send_command(CMD_CAPTURE, NULL, 0);
+        cam_request_pending = true;
+        timeout_start(CAM_ACK_TIMEOUT_MS);
+    }
+
+    cam_process_incoming();   /* parse ACK / RESULT / STATUS / ERROR */
+    alarm_update(fsm_state);  /* drive LED and buzzer */
+    debug_console_tick();     /* handle USB CLI */
+}
+\end{lstlisting}
+
+% -----------------------------------------------------------------------------
+\section{Theoretical verification plan}
+% -----------------------------------------------------------------------------
+
+Because no physical prototype is available, verification is limited to
+analytical, inspection, and simulation-based activities.
+
+\subsection{Expected behavior and design targets}
+
+\begin{table}[H]
+    \centering
+    \caption{Design targets for key behaviors.}
+    \begin{tabular}{@{}llp{6cm}@{}}
+        \toprule
+        \textbf{Metric} & \textbf{Target} & \textbf{Rationale} \\
+        \midrule
+        Sensor-to-alarm latency & $<$ 500~ms & Fast enough to deter an intruder. \\
+        ACK timeout & 500~ms & Short enough to detect a stalled CAM. \\
+        Capture timeout & 5~s & Allows image capture and inference without excessive delay. \\
+        Retry attempts & 3 & Balance robustness against UART noise with responsiveness. \\
+        Total 5~V current & $<$ 450~mA & Maintain margin under USB 500~mA limit. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Analytical verification}
+
+\begin{itemize}
+    \item Confirm that every requirement in Table~\ref{tab:requirements} is addressed by at least one design section or artifact.
+    \item Walk through the state machine for all combinations of sensor events and \texttt{cam\_available} values to ensure no undefined transitions.
+    \item Verify the checksum algorithm for every command and response example in the protocol.
+    \item Check the power budget in Table~\ref{tab:power} against the regulator and current-limiter limits.
+\end{itemize}
+
+\subsection{Schematic and PCB verification}
+
+\begin{itemize}
+    \item Inspect the Altium schematic against the pinout in Table~\ref{tab:pinout}.
+    \item Confirm that each GPIO has the correct direction, pull, and protection.
+    \item Review the PCB layout against the checklist in \S\ref{sec:electrical}.
+    \item Compare the \texttt{assets/Schematic Blocks/} previews with the final schematic before release.
+\end{itemize}
+
+\subsection{Excluded verification activities}
+
+The following activities are deferred until a prototype is built:
+
+\begin{itemize}
+    \item Oscilloscope capture of sensor and UART signals.
+    \item Thermal imaging of the ESP32-C3, ESP32-CAM, and power components.
+    \item Measured power consumption under idle, alarm, and capture conditions.
+    \item PCB bring-up logs and hardware-in-the-loop tests.
+\end{itemize}
+
+% -----------------------------------------------------------------------------
+\section{Summary}
+% -----------------------------------------------------------------------------
+
+This application note presented the design of the SecurityNode
+controller/application node.  Key design decisions include:
+
+\begin{itemize}
+    \item Replacing the unsafe ``CLEAR'' state with an \textbf{INCONCLUSIVE} state for non-threat vision results.
+    \item Introducing a \texttt{cam\_available} flag in the ARMED state so the node can gracefully fall back to a basic alarm when the ESP32-CAM is unavailable.
+    \item Splitting the event-handling path into TRIGGERED, VISION\_REQUEST, and VISION\_CHECK to separate event detection, command issuance, and result waiting.
+    \item Defining requirements, a traceability matrix, and a theoretical verification plan suitable for a design-stage review.
+\end{itemize}
+
+The node remains designed to work as a full vision-assisted alarm when the CAM
+is present and as a conventional sensor-driven alarm when it is not.  Once
+hardware is available, the theoretical plan can be extended with bench
+measurements and bring-up results.
+
+\end{document}
